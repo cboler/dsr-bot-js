@@ -1,0 +1,785 @@
+{
+    "PHASE1": [
+        {
+            "NAME": "JTR 1",
+            "TOONS": [
+                "REYJEDITRAINING",
+                "BB8",
+                "RESISTANCETROOPER",
+                "REY",
+                "VISASMARR"
+            ],
+            "GOAL": 4,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Inspirational Presence"
+            ]
+        },
+        {
+            "NAME": "JTR 3",
+            "TOONS": [
+                "REYJEDITRAINING",
+                "BB8",
+                "R2D2_LEGENDARY",
+                "REY",
+                "VISASMARR"
+            ],
+            "GOAL": 4,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Inspirational Presence"
+            ]
+        },
+        {
+            "NAME": "JTR 2",
+            "TOONS": [
+                "REYJEDITRAINING",
+                "BB8",
+                "R2D2_LEGENDARY",
+                "REY",
+                "RESISTANCETROOPER"
+            ],
+            "GOAL": 4,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Inspirational Presence"
+            ]
+        },
+        {
+            "NAME": "JTR 4",
+            "TOONS": [
+                "REYJEDITRAINING",
+                "BB8",
+                "R2D2_LEGENDARY",
+                "REY",
+                "BARRISSOFFEE"
+            ],
+            "GOAL": 4,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Inspirational Presence"
+            ]
+        },
+        {
+            "NAME": "JTR 5",
+            "TOONS": [
+                "REYJEDITRAINING",
+                "BB8",
+                "R2D2_LEGENDARY",
+                "REY",
+                "HERMITYODA"
+            ],
+            "GOAL": 4,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Inspirational Presence"
+            ]
+        }
+    ],
+    "PHASE3": [
+        {
+            "NAME": "Chex Mix with Pao and Chirrut",
+            "TOONS": [
+                "COMMANDERLUKESKYWALKER",
+                "HANSOLO",
+                "DEATHTROOPER",
+                "PAO",
+                "CHIRRUTIMWE"
+            ],
+            "GOAL": 4,
+            "MIN_GP": 75000,
+            "ZETAS": [
+                "Shoots First"
+            ]
+        },
+        {
+            "NAME": "Chex Mix with JKA and Chirrut",
+            "TOONS": [
+                "COMMANDERLUKESKYWALKER",
+                "HANSOLO",
+                "DEATHTROOPER",
+                "ANAKINKNIGHT",
+                "CHIRRUTIMWE"
+            ],
+            "GOAL": 4,
+            "MIN_GP": 75000,
+            "ZETAS": [
+                "Shoots First"
+            ]
+        },
+        {
+            "NAME": "Chex Mix with Pao and Rex",
+            "TOONS": [
+                "COMMANDERLUKESKYWALKER",
+                "HANSOLO",
+                "DEATHTROOPER",
+                "PAO",
+                "CT7567"
+            ],
+            "GOAL": 4,
+            "MIN_GP": 75000,
+            "ZETAS": [
+                "Shoots First"
+            ]
+        },
+        {
+            "NAME": "Chex Mix with JKA and Rex",
+            "TOONS": [
+                "COMMANDERLUKESKYWALKER",
+                "HANSOLO",
+                "DEATHTROOPER",
+                "ANAKINKNIGHT",
+                "CT7567"
+            ],
+            "GOAL": 4,
+            "MIN_GP": 75000,
+            "ZETAS": [
+                "Shoots First"
+            ]
+        }
+    ],
+    "PHASE2": [
+        {
+            "NAME": "Big Mix + HODA",
+            "TOONS": [
+                "ADMIRALACKBAR",
+                "HERMITYODA",
+                "GENERALKENOBI",
+                "PRINCESSLEIA",
+                "SABINEWRENS3"
+            ],
+            "GOAL": 3,
+            "MIN_GP": 80000
+        },
+        {
+            "NAME": "Big Mix + Barriss",
+            "TOONS": [
+                "ADMIRALACKBAR",
+                "BARRISSOFFEE",
+                "PRINCESSLEIA",
+                "GRANDADMIRALTHRAWN",
+                "SABINEWRENS3"
+            ],
+            "GOAL": 3,
+            "MIN_GP": 80000
+        },
+        {
+            "NAME": "Pathfinder\"s Training with Leia",
+            "TOONS": [
+                "PRINCESSLEIA",
+                "HERMITYODA",
+                "SCARIFREBEL",
+                "GRANDADMIRALTHRAWN",
+                "SABINEWRENS3"
+            ],
+            "GOAL": 3,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Do or Do Not"
+            ]
+        },
+        {
+            "NAME": "Pathfinder\"s Training",
+            "TOONS": [
+                "COMMANDERLUKESKYWALKER",
+                "HERMITYODA",
+                "SCARIFREBEL",
+                "EZRABRIDGERS3",
+                "SABINEWRENS3"
+            ],
+            "GOAL": 3,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Do or Do Not"
+            ]
+        },
+        {
+            "NAME": "Machine Gun Leia (w/ Thrawn)",
+            "TOONS": [
+                "ADMIRALACKBAR",
+                "PRINCESSLEIA",
+                "GRANDADMIRALTHRAWN",
+                "GENERALKENOBI",
+                "BARRISSOFFEE"
+            ],
+            "GOAL": 1,
+            "MIN_GP": 80000
+        },
+        {
+            "NAME": "Machine Gun Leia (w/ Sun Fac)",
+            "TOONS": [
+                "ADMIRALACKBAR",
+                "PRINCESSLEIA",
+                "SUNFAC",
+                "GENERALKENOBI",
+                "BARRISSOFFEE"
+            ],
+            "GOAL": 1,
+            "MIN_GP": 80000
+        },
+        {
+            "NAME": "Machine Gun Leia (w/ StHan)",
+            "TOONS": [
+                "ADMIRALACKBAR",
+                "PRINCESSLEIA",
+                "STORMTROOPERHAN",
+                "GENERALKENOBI",
+                "BARRISSOFFEE"
+            ],
+            "GOAL": 1,
+            "MIN_GP": 80000
+        },
+        {
+            "NAME": "Machine Gun Leia (Nute L, w/ Thrawn)",
+            "TOONS": [
+                "NUTEGUNRAY",
+                "PRINCESSLEIA",
+                "GRANDADMIRALTHRAWN",
+                "GENERALKENOBI",
+                "BARRISSOFFEE"
+            ],
+            "GOAL": 1,
+            "MIN_GP": 80000
+        },
+        {
+            "NAME": "Machine Gun Leia (Nute L, w/ Thrawn)",
+            "TOONS": [
+                "NUTEGUNRAY",
+                "PRINCESSLEIA",
+                "SUNFAC",
+                "GENERALKENOBI",
+                "BARRISSOFFEE"
+            ],
+            "GOAL": 1,
+            "MIN_GP": 80000
+        },
+        {
+            "NAME": "Machine Gun Leia (Nute L, w/ Thrawn)",
+            "TOONS": [
+                "NUTEGUNRAY",
+                "PRINCESSLEIA",
+                "STORMTROOPERHAN",
+                "GENERALKENOBI",
+                "BARRISSOFFEE"
+            ],
+            "GOAL": 1,
+            "MIN_GP": 80000
+        },
+        {
+            "NAME": "Kenobi Swamp",
+            "TOONS": [
+                "GENERALKENOBI",
+                "HERMITYODA",
+                "WAMPA",
+                "GRANDADMIRALTHRAWN",
+                "SABINEWRENS3"
+            ],
+            "GOAL": 5,
+            "MIN_GP": 80000,
+            "zetas": [
+                "Strength Flows From the Force"
+            ]
+        },
+        {
+            "NAME": "Boba lead Wampa",
+            "TOONS": [
+                "BOBAFETT",
+                "GRANDADMIRALTHRAWN",
+                "SABINEWRENS3",
+                "R2D2_LEGENDARY",
+                "WAMPA"
+            ],
+            "GOAL": 3,
+            "MIN_GP": 80000
+        },
+        {
+            "NAME": "GK lead Wampa",
+            "TOONS": [
+                "GENERALKENOBI",
+                "GRANDADMIRALTHRAWN",
+                "SABINEWRENS3",
+                "R2D2_LEGENDARY",
+                "WAMPA"
+            ],
+            "GOAL": 2,
+            "MIN_GP": 80000
+        },
+        {
+            "NAME": "Lumi lead Wampa",
+            "TOONS": [
+                "LUMINARAUNDULI",
+                "GRANDADMIRALTHRAWN",
+                "SABINEWRENS3",
+                "R2D2_LEGENDARY",
+                "WAMPA"
+            ],
+            "GOAL": 2,
+            "MIN_GP": 80000
+        },
+        {
+            "NAME": "OB lead Wampa",
+            "TOONS": [
+                "OLDBENKENOBI",
+                "GRANDADMIRALTHRAWN",
+                "SABINEWRENS3",
+                "GENERALKENOBI",
+                "WAMPA"
+            ],
+            "GOAL": 2,
+            "MIN_GP": 75000
+        },
+        {
+            "NAME": "JTR 1",
+            "TOONS": [
+                "REYJEDITRAINING",
+                "BB8",
+                "R2D2_LEGENDARY",
+                "REY",
+                "RESISTANCETROOPER"
+            ],
+            "GOAL": 3.5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Inspirational Presence"
+            ]
+        },
+        {
+            "NAME": "JTR 2",
+            "TOONS": [
+                "REYJEDITRAINING",
+                "BB8",
+                "R2D2_LEGENDARY",
+                "REY",
+                "VISASMARR"
+            ],
+            "GOAL": 3.5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Inspirational Presence"
+            ]
+        },
+        {
+            "NAME": "JTR 3",
+            "TOONS": [
+                "REYJEDITRAINING",
+                "BB8",
+                "R2D2_LEGENDARY",
+                "REY",
+                "BARRISSOFFEE"
+            ],
+            "GOAL": 3.5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Inspirational Presence"
+            ]
+        },
+        {
+            "NAME": "JTR 4",
+            "TOONS": [
+                "REYJEDITRAINING",
+                "BB8",
+                "R2D2_LEGENDARY",
+                "REY",
+                "HERMITYODA"
+            ],
+            "GOAL": 3.5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Inspirational Presence"
+            ]
+        },
+        {
+            "NAME": "Phoenix",
+            "TOONS": [
+                "HERASYNDULLAS3",
+                "SABINEWRENS3",
+                "ZEBS3",
+                "EZRABRIDGERS3",
+                "KANANJARRUSS3"
+            ],
+            "GOAL": 2,
+            "MIN_GP": 80000
+        },
+        {
+            "NAME": "Phoenix zetad",
+            "TOONS": [
+                "HERASYNDULLAS3",
+                "SABINEWRENS3",
+                "ZEBS3",
+                "EZRABRIDGERS3",
+                "KANANJARRUSS3"
+            ],
+            "GOAL": 4,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Demolish",
+                "Total Defense",
+                "Flourish",
+                "Staggering Sweep",
+                "Play to Strengths"
+            ]
+        },
+        {
+            "NAME": "Ewoks",
+            "TOONS": [
+                "CHIEFCHIRPA",
+                "WICKET",
+                "EWOKELDER",
+                "EWOKSCOUT",
+                "LOGRAY"
+            ],
+            "GOAL": 0.5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Simple Tactics"
+            ]
+        },
+        {
+            "NAME": "Sith",
+            "TOONS": [
+                "MAUL",
+                "DARTHNIHILUS",
+                "SITHTROOPER",
+                "SITHASSASSIN",
+                "VADER"
+            ],
+            "GOAL": 0.5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Dancing Shadows"
+            ]
+        },
+        {
+            "NAME": "Sith + Marauder",
+            "TOONS": [
+                "MAUL",
+                "DARTHNIHILUS",
+                "SITHTROOPER",
+                "SITHASSASSIN",
+                "SITHMARAUDER"
+            ],
+            "GOAL": 0.5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Dancing Shadows"
+            ]
+        },
+        {
+            "NAME": "Sith",
+            "TOONS": [
+                "MAUL",
+                "DARTHNIHILUS",
+                "SITHTROOPER",
+                "SITHASSASSIN",
+                "DARTHSION"
+            ],
+            "GOAL": 0.5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Dancing Shadows"
+            ]
+        },
+        {
+            "NAME": "Sith",
+            "TOONS": [
+                "MAUL",
+                "DARTHNIHILUS",
+                "SITHTROOPER",
+                "SITHASSASSIN",
+                "EMPERORPALPATINE"
+            ],
+            "GOAL": 0.5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Dancing Shadows"
+            ]
+        },
+        {
+            "NAME": "Sith",
+            "TOONS": [
+                "MAUL",
+                "DARTHNIHILUS",
+                "SITHTROOPER",
+                "SITHASSASSIN",
+                "COUNTDOOKU"
+            ],
+            "GOAL": 0.5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Dancing Shadows"
+            ]
+        },
+        {
+            "NAME": "Sith",
+            "TOONS": [
+                "MAUL",
+                "DARTHNIHILUS",
+                "SITHTROOPER",
+                "SITHASSASSIN",
+                "SAVAGEOPRESS"
+            ],
+            "GOAL": 0.5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Dancing Shadows"
+            ]
+        },
+        {
+            "NAME": "Sith",
+            "TOONS": [
+                "MAUL",
+                "DARTHNIHILUS",
+                "SITHTROOPER",
+                "SITHASSASSIN",
+                "DARTHSIDIOUS"
+            ],
+            "GOAL": 0.5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Dancing Shadows"
+            ]
+        },
+        {
+            "NAME": "Thrawnpers without DT",
+            "TOONS": [
+                "GRANDADMIRALTHRAWN",
+                "VEERS",
+                "COLONELSTARCK",
+                "SHORETROOPER",
+                "SNOWTROOPER"
+            ],
+            "GOAL": 0.5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Aggressive Tactician"
+            ]
+        },
+        {
+            "NAME": "Nightmare 1",
+            "TOONS": [
+                "EMPERORPALPATINE",
+                "VADER",
+                "DARTHNIHILUS",
+                "DARTHSION",
+                "SITHTROOPER"
+            ],
+            "GOAL": 2,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Emperor of the Galactic Empire"
+            ]
+        },
+        {
+            "NAME": "Nightmare 2",
+            "TOONS": [
+                "EMPERORPALPATINE",
+                "VADER",
+                "DARTHNIHILUS",
+                "GRANDMOFFTARKIN",
+                "SITHTROOPER"
+            ],
+            "GOAL": 2,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Emperor of the Galactic Empire"
+            ]
+        },
+        {
+            "NAME": "Nightmare 3",
+            "TOONS": [
+                "EMPERORPALPATINE",
+                "GRANDADMIRALTHRAWN",
+                "DARTHNIHILUS",
+                "DARTHSION",
+                "SITHTROOPER"
+            ],
+            "GOAL": 2,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Emperor of the Galactic Empire"
+            ]
+        },
+        {
+            "NAME": "Nightmare 4",
+            "TOONS": [
+                "EMPERORPALPATINE",
+                "GRANDADMIRALTHRAWN",
+                "DARTHNIHILUS",
+                "DARTHSION",
+                "VADER"
+            ],
+            "GOAL": 2,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Emperor of the Galactic Empire"
+            ]
+        },
+        {
+            "NAME": "Nightmare 5",
+            "TOONS": [
+                "EMPERORPALPATINE",
+                "GRANDADMIRALTHRAWN",
+                "DARTHNIHILUS",
+                "GRANDMOFFTARKIN",
+                "SITHTROOPER"
+            ],
+            "GOAL": 2,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Emperor of the Galactic Empire"
+            ]
+        },
+        {
+            "NAME": "Nightmare 6",
+            "TOONS": [
+                "EMPERORPALPATINE",
+                "GRANDADMIRALTHRAWN",
+                "DARTHNIHILUS",
+                "GRANDMOFFTARKIN",
+                "VADER"
+            ],
+            "GOAL": 2,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Emperor of the Galactic Empire"
+            ]
+        },
+        {
+            "NAME": "Nightmare 7",
+            "TOONS": [
+                "EMPERORPALPATINE",
+                "SITHMARAUDER",
+                "DARTHNIHILUS",
+                "DARTHSION",
+                "SITHTROOPER"
+            ],
+            "GOAL": 2,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Emperor of the Galactic Empire"
+            ]
+        },
+        {
+            "NAME": "Nightmare 8",
+            "TOONS": [
+                "EMPERORPALPATINE",
+                "SITHMARAUDER",
+                "DARTHNIHILUS",
+                "DARTHSION",
+                "VADER"
+            ],
+            "GOAL": 2,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Emperor of the Galactic Empire"
+            ]
+        },
+        {
+            "NAME": "Nightmare 9",
+            "TOONS": [
+                "EMPERORPALPATINE",
+                "SITHMARAUDER",
+                "DARTHNIHILUS",
+                "GRANDMOFFTARKIN",
+                "SITHTROOPER"
+            ],
+            "GOAL": 2,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Emperor of the Galactic Empire"
+            ]
+        },
+        {
+            "NAME": "Nightmare 10",
+            "TOONS": [
+                "EMPERORPALPATINE",
+                "SITHMARAUDER",
+                "DARTHNIHILUS",
+                "GRANDMOFFTARKIN",
+                "VADER"
+            ],
+            "GOAL": 2,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Emperor of the Galactic Empire"
+            ]
+        }
+    ],
+    "PHASE4_WITH_DN": [
+        {
+            "NAME": "Nightsisters with MT and Zombie 1",
+            "TOONS": [
+                "ASAJVENTRESS",
+                "DAKA",
+                "TALIA",
+                "NIGHTSISTERZOMBIE",
+                "MOTHERTALZIN"
+            ],
+            "GOAL": 15,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Nightsister Swiftness"
+            ]
+        },
+        {
+            "NAME": "Nightsisters with MT and Zombie 2",
+            "TOONS": [
+                "ASAJVENTRESS",
+                "DAKA",
+                "NIGHTSISTERACOLYTE",
+                "NIGHTSISTERZOMBIE",
+                "MOTHERTALZIN"
+            ],
+            "GOAL": 15,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Nightsister Swiftness"
+            ]
+        },
+        {
+            "NAME": "Nightsisters with MT",
+            "TOONS": [
+                "ASAJVENTRESS",
+                "DAKA",
+                "TALIA",
+                "NIGHTSISTERACOLYTE",
+                "MOTHERTALZIN"
+            ],
+            "GOAL": 10,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Nightsister Swiftness"
+            ]
+        },
+        {
+            "NAME": "Nightsisters with Zombie",
+            "TOONS": [
+                "ASAJVENTRESS",
+                "DAKA",
+                "TALIA",
+                "NIGHTSISTERACOLYTE",
+                "NIGHTSISTERZOMBIE"
+            ],
+            "GOAL": 10,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Nightsister Swiftness"
+            ]
+        },
+        {
+            "NAME": "Nightsisters",
+            "TOONS": [
+                "ASAJVENTRESS",
+                "DAKA",
+                "TALIA",
+                "NIGHTSISTERACOLYTE",
+                "NIGHTSISTERINITIATE"
+            ],
+            "GOAL": 5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Nightsister Swiftness"
+            ]
+        }
+    ]
+}
