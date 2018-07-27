@@ -12,7 +12,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     return;
   }
 
-  const guild1 = await client.swapi.fetchGuild(args[0]);
+  const guild1 = await client.swapi.fetchGuild(allycode1);
   if (guild1.hasOwnProperty('error')) {
     message.channel.send(`\`\`\`js\nError: ${guild1.error}.\n\`\`\``);
     return;
