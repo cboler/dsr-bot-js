@@ -58,5 +58,9 @@ module.exports = (client, message) => {
   // If the command exists, **AND** the user has permission, run it.
   client.logger.cmd(`[CMD] ${client.config.permLevels.find(l => l.level === level).name} ${message.author.username} (${message.author.id}) ran command ${cmd.help.name}`);
   message.react("🖐");
-  cmd.run(client, message, args, level);
+  try {
+    cmd.run(client, message, args, level);
+  } catch(error) {
+    message.channel.send(`\`\`\`js\nError: ${error}.\n\`\`\``);
+  }
 };

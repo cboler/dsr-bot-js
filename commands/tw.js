@@ -13,6 +13,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 
   const guild1 = await client.swapi.fetchGuild(args[0]);
+  if (guild1.hasOwnProperty('error')) {
+    message.channel.send(`\`\`\`js\nError: ${guild1.error}.\n\`\`\``);
+    return;
+  }
   const zetaData = await client.swapi.fetchData('zetas');
   stats1 = getGuildStats(client, guild1.roster, guild1.members);
   // message.channel.send(`\`\`\`js\n${guild1.name}: ${JSON.stringify(stats1)}\n\`\`\``);
@@ -23,6 +27,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       return;
     }
     const guild2 = await client.swapi.fetchGuild(allycode2);
+    if (guild2.hasOwnProperty('error')) {
+      message.channel.send(`\`\`\`js\nError: ${guild2.error} is not an ally code.\n\`\`\``);
+      return;
+    }
     stats2 = getGuildStats(client, guild2.roster, guild2.members);
     // message.channel.send(`\`\`\`js\n${guild2.name}: ${JSON.stringify(stats2)}\n\`\`\``);
 
@@ -30,7 +38,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     Object.keys(stats1).forEach(function (key) {
       let val = `${stats1[key]} vs ${stats2[key]}`;
       let lfill = (55 - val.length) / 2;
-      if(lfill < 0) {
+      if (lfill < 0) {
         lfill = 0;
       }
       val = `${' '.repeat(lfill)}${val}`;
@@ -103,7 +111,7 @@ function getGuildStats(client, roster, nbMembers) {
   res['Average Arena Rank'] /= roster.length;
   res['Average Arena Rank'] = res['Average Arena Rank'].toFixed(2);
   res['Average Fleet Arena Rank'] /= roster.length;
-  res['Average Fleet Arena Rank'] =res['Average Fleet Arena Rank'].toFixed(2);
+  res['Average Fleet Arena Rank'] = res['Average Fleet Arena Rank'].toFixed(2);
   return res;
 }
 
