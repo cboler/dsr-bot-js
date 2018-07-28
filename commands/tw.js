@@ -2,13 +2,16 @@
 // 1. with one argument: will return data for tw
 // 2. with 2 arguments: will compare data between 2 allycode's guilds for tw
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
+  message.react("🖐");
   if (!args.length) {
     message.channel.send(`\`\`\`js\nError: tw needs an ally code.\n\`\`\``);
+    message.react("☠");
     return;
   }
   allycode1 = args[0].replace(/-/g, '');
   if (!client.isAllyCode(allycode1)) {
     message.channel.send(`\`\`\`js\nError: ${args[0]} is not an ally code.\n\`\`\``);
+    message.react("☠");
     return;
   }
 
@@ -16,11 +19,14 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   const details1 = await client.swapi.fetchGuild(allycode1, 'details'); 
   if (guild1.hasOwnProperty('error')) {
     message.channel.send(`\`\`\`js\nError: ${guild1.error}.\n\`\`\``);
+    message.react("☠");
     return;
   }
 
   if (guild1.hasOwnProperty('response')) {
     message.channel.send(`\`\`\`js\nError: Request time out requesting roster for ${allycode1}\n\`\`\``);
+    message.react("☠");
+    return;
   }
 
   const zetaData = await client.swapi.fetchData('zetas');
@@ -30,17 +36,21 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     allycode2 = args[1].replace(/-/g, '');
     if (!client.isAllyCode(allycode2)) {
       message.channel.send(`\`\`\`js\nError: ${args[1]} is not an ally code.\n\`\`\``);
+      message.react("☠");
       return;
     }
     const guild2 = await client.swapi.fetchGuild(allycode2, 'roster');
     const details2 = await client.swapi.fetchGuild(allycode2, 'details'); 
     if (guild2.hasOwnProperty('error')) {
       message.channel.send(`\`\`\`js\nError: ${guild2.error}\n\`\`\``);
+      message.react("☠");
       return;
     } 
     
     if (guild2.hasOwnProperty('response')) {
       message.channel.send(`\`\`\`js\nError: Request time out requesting roster for ${allycode2}\n\`\`\``);
+      message.react("☠");
+      return;
     }
     stats2 = getGuildStats(client, guild2);
     // message.channel.send(`\`\`\`js\n${guild2.name}: ${JSON.stringify(stats2)}\n\`\`\``);

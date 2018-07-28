@@ -3,13 +3,16 @@ const hstrTeams = require("../data/hstrTeams.json");
 const MAX_HSTR_TEAMS_PER_EMBED = 28;
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
+  message.react("🖐");
   if (!args.length) {
     message.channel.send(`\`\`\`js\nError: sithraid needs an ally code.\n\`\`\``);
+    message.react("☠");
     return;
   }
   allycode = args[0].replace(/-/g, '');
   if (!client.isAllyCode(allycode)) {
     message.channel.send(`\`\`\`js\nError: ${args[0]} is not an ally code.\n\`\`\``);
+    message.react("☠");
     return;
   }
 
@@ -20,6 +23,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     options = Array.from(options);
     if (options.indexOf('g') < 0 && options.indexOf('p') < 0 && options.indexOf('d') < 0) {
       message.channel.send(`\`\`\`js\nError: Unrecognized option: ${options}.\n\`\`\``);
+      message.react("☠");
       return;
     }
   }
@@ -43,10 +47,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     fields.push({ name: msg[m][0], value: msg[m][1] });
   }
   message.channel.send(client.createEmbed('HSTR Readiness', fields));
-  message.channel.send(`\`\`\`js\n${msg}.\n\`\`\``);
-  for (const phase in breakdown) {
-    message.channel.send(`\`\`\`js\n${JSON.stringify(breakdown[phase])}.\n\`\`\``);
-  }
+  // message.channel.send(`\`\`\`js\n${msg}.\n\`\`\``);
+  // for (const phase in breakdown) {
+  //   message.channel.send(`\`\`\`js\n${JSON.stringify(breakdown[phase])}.\n\`\`\``);
+  // }
 
   if (options.indexOf('d') >= 0) {
     var dm = message.author;
@@ -305,12 +309,12 @@ exports.conf = {
   enabled: true,
   guildOnly: false,
   aliases: ['sr'],
-  permLevel: "Bot Owner"
+  permLevel: "User"
 };
 
 exports.help = {
   name: "sithraid",
   category: "Raid",
   description: "Check for a guild or player's readiness to the HSTR.",
-  usage: "sithraid <allycode> (Options: [ g | p | d])\nExample: \nsithraid 123456789 -gd\nsithraid 123456789 -p\ng: guild (default)\np: player\nd: details"
+  usage: "sithraid <allycode> (Options: [ g | p | d | c ])\nExample: \nsithraid 123456789 -gdc\nsithraid 123456789 -p\ng: guild (default)\np: player\nd: details\nc: channel (display details in current channel)"
 };
