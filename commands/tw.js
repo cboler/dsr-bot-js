@@ -12,13 +12,19 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     return;
   }
 
-  const guild1 = await client.swapi.fetchGuild(allycode1);
+  const guild1 = await client.swapi.fetchGuild(allycode1, 'roster');
+  const details1 = await client.swapi.fetchGuild(allycode1, 'details'); 
   if (guild1.hasOwnProperty('error')) {
     message.channel.send(`\`\`\`js\nError: ${guild1.error}.\n\`\`\``);
     return;
   }
+
+  if (guild1.hasOwnProperty('response')) {
+    message.channel.send(`\`\`\`js\nError: Request time out requesting roster for ${allycode1}\n\`\`\``);
+  }
+
   const zetaData = await client.swapi.fetchData('zetas');
-  stats1 = getGuildStats(client, guild1.roster, guild1.members);
+  stats1 = getGuildStats(client, guild1);
   // message.channel.send(`\`\`\`js\n${guild1.name}: ${JSON.stringify(stats1)}\n\`\`\``);
   if (args.length > 1) {
     allycode2 = args[1].replace(/-/g, '');
@@ -26,12 +32,17 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       message.channel.send(`\`\`\`js\nError: ${args[1]} is not an ally code.\n\`\`\``);
       return;
     }
-    const guild2 = await client.swapi.fetchGuild(allycode2);
+    const guild2 = await client.swapi.fetchGuild(allycode2, 'roster');
+    const details2 = await client.swapi.fetchGuild(allycode2, 'details'); 
     if (guild2.hasOwnProperty('error')) {
-      message.channel.send(`\`\`\`js\nError: ${guild2.error} is not an ally code.\n\`\`\``);
+      message.channel.send(`\`\`\`js\nError: ${guild2.error}\n\`\`\``);
       return;
+    } 
+    
+    if (guild2.hasOwnProperty('response')) {
+      message.channel.send(`\`\`\`js\nError: Request time out requesting roster for ${allycode2}\n\`\`\``);
     }
-    stats2 = getGuildStats(client, guild2.roster, guild2.members);
+    stats2 = getGuildStats(client, guild2);
     // message.channel.send(`\`\`\`js\n${guild2.name}: ${JSON.stringify(stats2)}\n\`\`\``);
 
     fields = [];
@@ -44,14 +55,26 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       val = `${' '.repeat(lfill)}${val}`;
       fields.push({ name: key, value: `\`\`\`js\n${val}\`\`\`` });
     });
-    message.channel.send(client.createEmbed(guild1.name + " vs " + guild2.name, fields));
+    message.channel.send(client.createEmbed(details1.name + " vs " + details2.name, fields));
+  } else {
+    fields = [];
+    Object.keys(stats1).forEach(function (key) {
+      let val = `${stats1[key]}`;
+      let lfill = (55 - val.length) / 2;
+      if (lfill < 0) {
+        lfill = 0;
+      }
+      val = `${' '.repeat(lfill)}${val}`;
+      fields.push({ name: key, value: `\`\`\`js\n${val}\`\`\`` });
+    });
+    message.channel.send(client.createEmbed(details1.name, fields));    
   }
   message.react("👍");
 };
 
-function getGuildStats(client, roster, nbMembers) {
+function getGuildStats(client, roster) {
   res = {};
-  res['Members'] = nbMembers;
+  res['Members'] = roster.length;
   res['Total GP'] = 0;
   res['Average Arena Rank'] = 0;
   res['Average Fleet Arena Rank'] = 0;

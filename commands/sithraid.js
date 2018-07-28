@@ -48,7 +48,11 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     message.channel.send(`\`\`\`js\n${JSON.stringify(breakdown[phase])}.\n\`\`\``);
   }
 
-  if (options.indexOf('d') > 0) {
+  if (options.indexOf('d') >= 0) {
+    var dm = message.author;
+    if (options.indexOf('c') >= 0) {
+      dm = message.channel;
+    }
     Object.keys(breakdown)
       .sort()
       .forEach(function (v, i) {
@@ -62,15 +66,15 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
             }
             fields.push({ name: `${team} - ${breakdown[v][team]['comp']} (Goal: ${breakdown[v][team]['goal']}%) - eligibility: ${breakdown[v][team]['eligibility']}`, value: breakdown[v][team]['players'].join(", ") });
           }
-          message.channel.send(client.createEmbed(`HSTR ${v} Assignments`, fields));
+          dm.send(client.createEmbed(`HSTR ${v} Assignments`, fields));
         } else {
           nb = Math.ceil(teams.length / MAX_HSTR_TEAMS_PER_EMBED);
           for (let i = 0; i < nb + 1; i++) {
             fields = [];
-            for(const teamName in teams.slice((i - 1) * MAX_HSTR_TEAMS_PER_EMBED, i * i * MAX_HSTR_TEAMS_PER_EMBED < teams.length ? MAX_HSTR_TEAMS_PER_EMBED : teams.length)) {
+            for (const teamName in teams.slice((i - 1) * MAX_HSTR_TEAMS_PER_EMBED, i * i * MAX_HSTR_TEAMS_PER_EMBED < teams.length ? MAX_HSTR_TEAMS_PER_EMBED : teams.length)) {
               fields.push({ name: `${team} - ${breakdown[v][team]['comp']} (Goal: ${breakdown[v][team]['goal']}%) - eligibility: ${breakdown[v][team]['eligibility']}`, value: breakdown[v][team]['players'].join(", ") });
             }
-            message.channel.send(client.createEmbed(`HSTR ${v} Assignments (${i}/${nb})`, fields));
+            dm.send(client.createEmbed(`HSTR ${v} Assignments (${i}/${nb})`, fields));
           }
         }
       });
