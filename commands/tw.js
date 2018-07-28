@@ -57,6 +57,7 @@ function getGuildStats(client, roster, nbMembers) {
   res['Average Fleet Arena Rank'] = 0;
   res['Number of Trayas'] = 0;
   res['Number of zzTrayas'] = 0;
+  res['Number of G11+ Trayas'] = 0;
   res['Number of G11+ Magmatroopers'] = 0;
   res['Number of zBastilla'] = 0;
   res['Number of G11'] = 0;
@@ -93,6 +94,9 @@ function getGuildStats(client, roster, nbMembers) {
           if (tempZetas >= 2) {
             res['Number of zzTrayas']++;
           }
+          if (isG11 || isG12) {
+            res['Number of G11+ Trayas']++;
+          }
           break;
         case 'MAGMATROOPER':
           if (isG11 || isG12) {
@@ -119,7 +123,7 @@ exports.conf = {
   enabled: true,
   guildOnly: false,
   aliases: [],
-  permLevel: "user"
+  permLevel: "usergi"
 };
 
 exports.help = {
