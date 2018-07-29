@@ -38,8 +38,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     guild = await client.swapi.fetchGuild(allycode);
     [msg, breakdown] = analyzeGuildHstrReadiness(client, guild.roster, zetaData, charMedia);
   }
-  
-  console.log(hstrTeams);
+
   fields = [];
   for (const m in msg) {
     if (!msg.hasOwnProperty(m)) {
@@ -48,10 +47,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     fields.push({ name: msg[m][0], value: msg[m][1] });
   }
   message.channel.send(client.createEmbed('HSTR Readiness', fields));
-  // message.channel.send(`\`\`\`js\n${msg}.\n\`\`\``);
-  // for (const phase in breakdown) {
-  //   message.channel.send(`\`\`\`js\n${JSON.stringify(breakdown[phase])}.\n\`\`\``);
-  // }
 
   if (options.indexOf('d') >= 0) {
     var dm = message.author;
@@ -251,14 +246,18 @@ function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
 
   for (const phase in readiness) {
     phase_data = readiness[phase];
-    for (const team in phase_data['teams']) {
-      for (const t in hstrTeams[phase]) {
+    for (const dataTeam in phase_data['teams']) {
+      const team = phase_data['teams'][dataTeam];
+      for (const ht in hstrTeams[phase]) {
+        const t = hstrTeams[phase][ht];
         if (t['NAME'] == team['team_name']) {
           temp = t['TOONS'];
           var team_str = [];
           for (te in temp) {
-            for (c in char_media) {
-              if (c['base_id'] == te) {
+            const tem = temp[te];
+            for (cID in char_media) {
+              const c = char_media[cID];
+              if (cID == tem) {
                 team_str.push(c['name']);
                 break;
               }
