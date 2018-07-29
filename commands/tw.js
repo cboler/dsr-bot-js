@@ -156,7 +156,7 @@ exports.conf = {
   enabled: true,
   guildOnly: false,
   aliases: [],
-  permLevel: "usergi"
+  permLevel: "Bot Owner"
 };
 
 exports.help = {
