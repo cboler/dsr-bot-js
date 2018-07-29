@@ -31,13 +31,14 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   let guild = null;
   const zetaData = await client.swapi.fetchData('zetas');
   const charMedia = await client.swapi.fetchData('units');
-  if (options.indexOf('g') >= 0) {
-    guild = await client.swapi.fetchGuild(allycode);
-    [msg, breakdown] = analyzeGuildHstrReadiness(client, guild.roster, zetaData, charMedia);
-  } else if (options.indexOf('p') >= 0) {
+  if (options.indexOf('p') >= 0) {
     player = await client.swapi.fetchPlayer(allycode);
     [msg, breakdown] = analyzeGuildHstrReadiness(client, [player], zetaData, charMedia);
+  } else {
+    guild = await client.swapi.fetchGuild(allycode);
+    [msg, breakdown] = analyzeGuildHstrReadiness(client, guild.roster, zetaData, charMedia);
   }
+  
   console.log(hstrTeams);
   fields = [];
   for (const m in msg) {

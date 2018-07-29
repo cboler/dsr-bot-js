@@ -12,7 +12,8 @@
             "GOAL": 4,
             "MIN_GP": 80000,
             "ZETAS": [
-                "Inspirational Presence"
+                "Inspirational Presence",
+                "Returned to the Light"
             ]
         },
         {
@@ -27,7 +28,8 @@
             "GOAL": 4,
             "MIN_GP": 80000,
             "ZETAS": [
-                "Inspirational Presence"
+                "Inspirational Presence",
+                "Returned to the Light"
             ]
         },
         {
@@ -73,6 +75,23 @@
             "MIN_GP": 80000,
             "ZETAS": [
                 "Inspirational Presence"
+            ]
+        },
+        {
+            "NAME": "Jedi Way",
+            "TOONS": [
+                "GRANDMASTERYODA",
+                "QUIGONJINN",
+                "HERMITYODA",
+                "EZRABRIDGERS3",
+                "VISASMARR"
+            ],
+            "GOAL": 4,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Battle Meditation",
+                "Grand Master's Guidance",
+                "Returned to the Light"
             ]
         }
     ],
@@ -123,19 +142,16 @@
             ]
         },
         {
-            "NAME": "Chex Mix with JKA and Rex",
+            "NAME": "Flaming hot Greedo Mix",
             "TOONS": [
-                "COMMANDERLUKESKYWALKER",
-                "HANSOLO",
+                "BOBAFETT",
+                "GREEDO",
                 "DEATHTROOPER",
-                "ANAKINKNIGHT",
-                "CT7567"
+                "PAO",
+                "CHIRRUTIMWE"
             ],
-            "GOAL": 4,
-            "MIN_GP": 75000,
-            "ZETAS": [
-                "Shoots First"
-            ]
+            "GOAL": 8,
+            "MIN_GP": 75000
         }
     ],
     "PHASE2": [
@@ -355,7 +371,8 @@
             "GOAL": 3.5,
             "MIN_GP": 80000,
             "ZETAS": [
-                "Inspirational Presence"
+                "Inspirational Presence",
+                "Returned to the Light"
             ]
         },
         {
@@ -465,7 +482,7 @@
             ]
         },
         {
-            "NAME": "Sith",
+            "NAME": "Sith 1",
             "TOONS": [
                 "MAUL",
                 "DARTHNIHILUS",
@@ -480,7 +497,7 @@
             ]
         },
         {
-            "NAME": "Sith",
+            "NAME": "Sith 2",
             "TOONS": [
                 "MAUL",
                 "DARTHNIHILUS",
@@ -495,7 +512,7 @@
             ]
         },
         {
-            "NAME": "Sith",
+            "NAME": "Sith 3",
             "TOONS": [
                 "MAUL",
                 "DARTHNIHILUS",
@@ -510,7 +527,7 @@
             ]
         },
         {
-            "NAME": "Sith",
+            "NAME": "Sith 4",
             "TOONS": [
                 "MAUL",
                 "DARTHNIHILUS",
@@ -525,7 +542,7 @@
             ]
         },
         {
-            "NAME": "Sith",
+            "NAME": "Sith 5",
             "TOONS": [
                 "MAUL",
                 "DARTHNIHILUS",
@@ -702,6 +719,37 @@
             "MIN_GP": 80000,
             "ZETAS": [
                 "Emperor of the Galactic Empire"
+            ]
+        },
+        {
+            "NAME": "Jedi Way GK lead",
+            "TOONS": [
+                "GENERALKENOBI",
+                "GRANDMASTERYODA",
+                "HERMITYODA",
+                "BASTILASHAN",
+                "EZRABRIDGERS3"
+            ],
+            "GOAL": 4,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Battle Meditation"
+            ]
+        },
+        {
+            "NAME": "Jedi Way Bastila lead",
+            "TOONS": [
+                "GENERALKENOBI",
+                "GRANDMASTERYODA",
+                "HERMITYODA",
+                "BASTILASHAN",
+                "EZRABRIDGERS3"
+            ],
+            "GOAL": 4,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Battle Meditation",
+                "Initiative"
             ]
         }
     ],
