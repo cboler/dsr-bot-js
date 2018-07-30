@@ -316,5 +316,5 @@ exports.help = {
   name: "sithraid",
   category: "Raid",
   description: "Check for a guild or player's readiness to the HSTR.",
-  usage: "sithraid <allycode> (Options: [ g | p | d | c ])\nExample: \nsithraid 123456789 -gdc\nsithraid 123456789 -p\ng: guild (default)\np: player\nd: details\nc: channel (display details in current channel)"
+  usage: "sithraid <allycode> (Options: [ g | p | d | c ])\nExample: \nsithraid 123456789 gdc\nsithraid 123456789 p\ng: guild (default)\np: player\nd: details\nc: channel (display details in current channel)"
 };
