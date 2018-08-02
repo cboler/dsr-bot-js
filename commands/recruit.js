@@ -37,16 +37,16 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   });
   message.channel.send(client.createEmbedInDescription(playerData.name, fields));
   const speedMods = getPlayerMods(client, playerMods.mods, 'Speed', 15);
-  if(speedMods.length) {
-    message.channel.send(client.createEmbed(`${playerData.name}'s Top Speed Mods`, speedMods));
+  if (speedMods.length) {
+    message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Speed Mods`, speedMods));
   } else {
-    message.channel.send(client.createEmbed(`${playerData.name}'s Top Speed Mods`, {name: '😦', value: 'No mods with speed secondary above 15.', inline: true}));
+    message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Speed Mods`, { name: '😦', value: 'No mods with speed secondary above 15.', inline: true }));
   }
   const offMods = getPlayerMods(client, playerMods.mods, 'Offense', 100);
-  if(offMods.length) {
-    message.channel.send(client.createEmbed(`${playerData.name}'s Top Offense Mods`, offMods));
+  if (offMods.length) {
+    message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Offense Mods`, offMods));
   } else {
-    message.channel.send(client.createEmbed(`${playerData.name}'s Top Speed Mods`, {name: '😦', value: 'No mods with speed secondary above 100.', inline: true}));
+    message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Ofense Mods`, { name: '😦', value: 'No mods with offense secondary above 100.', inline: true }));
   }
   message.react("👍");
 };
@@ -158,77 +158,131 @@ function getPlayerMods(client, data, type, minVal) {
 
     if (data[d].secondaryType_1 === type) {
       if (Number(data[d].secondaryValue_1) > minVal) {
-        mods.push(modToField(data[d], type));
+        // mods.push(modToField(data[d], type));
+        mods.push(data[d]);
         continue;
       }
     }
     if (data[d].secondaryType_2 === type) {
       if (Number(data[d].secondaryValue_2) > minVal) {
-        mods.push(modToField(data[d], type));
+        mods.push(data[d]);
         continue;
       }
     }
     if (data[d].secondaryType_3 === type) {
       if (Number(data[d].secondaryValue_3) > minVal) {
-        mods.push(modToField(data[d], type));
+        mods.push(data[d]);
         continue;
       }
     }
     if (data[d].secondaryType_4 === type) {
       if (Number(data[d].secondaryValue_4) > minVal) {
-        mods.push(modToField(data[d], type));
+        mods.push(data[d]);
         continue;
       }
     }
   }
-  return mods;
+  switch (type) {
+    case 'Speed':
+      mods.sort(modSortSpeed);
+      break;
+    case 'Offense':
+      mods.sort(modSortOffense);
+      break;
+  }
+  mods = mods.slice(0, 6);
+  mods = mods.reverse();
+  let res = [];
+  for (const m of Object.keys(mods)) {
+    res.push(modToField(mods[m], type));
+  }
+  return res;
 }
 
 function modToField(mod, type) {
   let slot = null;
   switch (mod.slot) {
     case 'diamond':
-    slot = '◆';
+      slot = '◆';
       break;
     case 'circle':
-    slot = '●';
+      slot = '●';
       break;
     case 'cross':
-    slot = '+';
+      slot = '+';
       break;
     case 'square':
-    slot = '■';
+      slot = '■';
       break;
     case 'arrow':
-    slot = '➚';
+      slot = '➚';
       break;
     case 'triangle':
       slot = '▲';
       break;
   }
   let value = `\`\`\`asciidoc\n= ${mod.characterName} =\n`;
-  if(mod.secondaryType_1 === type) {
+  if (mod.secondaryType_1 === type) {
     value += `[${mod.secondaryValue_1} ${mod.secondaryType_1}]\n`;
   } else {
     value += `${mod.secondaryValue_1} ${mod.secondaryType_1}\n`;
   }
-  if(mod.secondaryType_2 === type) {
+  if (mod.secondaryType_2 === type) {
     value += `[${mod.secondaryValue_2} ${mod.secondaryType_2}]\n`;
   } else {
     value += `${mod.secondaryValue_2} ${mod.secondaryType_2}\n`;
   }
-  if(mod.secondaryType_3 === type) {
+  if (mod.secondaryType_3 === type) {
     value += `[${mod.secondaryValue_3} ${mod.secondaryType_3}]\n`;
   } else {
     value += `${mod.secondaryValue_3} ${mod.secondaryType_3}\n`;
   }
-  if(mod.secondaryType_4 === type) {
+  if (mod.secondaryType_4 === type) {
     value += `[${mod.secondaryValue_4} ${mod.secondaryType_4}]\n`;
   } else {
     value += `${mod.secondaryValue_4} ${mod.secondaryType_4}\n`;
   }
   value += `\`\`\``;
   return { name: `${mod.pips} dot ${mod.set} ${slot} ${mod.primaryBonusType} primary`, value: value, inline: true };
+}
+
+function modSortSpeed(a, b) {
+  return modSort(a, b, 'Speed');
+}
+
+function modSortOffense(a, b) {
+  return modSort(a, b, 'Offense');
+}
+
+function modSort(a, b, type) {
+  let valA = 0;
+  let valB = 0;
+  if (a.secondaryType_1 == type) {
+    valA = Number(a.secondaryValue_1);
+  }
+  if (a.secondaryType_2 == type) {
+    valA = Number(a.secondaryValue_2);
+  }
+  if (a.secondaryType_3 == type) {
+    valA = Number(a.secondaryValue_3);
+  }
+  if (a.secondaryType_4 == type) {
+    valA = Number(a.secondaryValue_4);
+  }
+  if (b.secondaryType_1 == type) {
+    valB = Number(b.secondaryValue_1);
+  }
+  if (b.secondaryType_2 == type) {
+    valB = Number(b.secondaryValue_2);
+  }
+  if (b.secondaryType_3 == type) {
+    valB = Number(b.secondaryValue_3);
+  }
+  if (b.secondaryType_4 == type) {
+    valB = Number(b.secondaryValue_4);
+  }
+
+  return valA - valB;
 }
 
 exports.conf = {
