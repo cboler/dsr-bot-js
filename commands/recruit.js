@@ -14,7 +14,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 
   const playerData = await client.swapi.fetchPlayer(allycode1);
-  const playerMods = await client.swapi.fetchPlayer(allycode1, 'mods');
   const charData = await client.swapi.fetchData('units');
   if (playerData.hasOwnProperty('error')) {
     message.channel.send(`\`\`\`js\nError: ${playerData.error}.\n\`\`\``);
@@ -36,17 +35,53 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     fields.push({ name: key, value: val });
   });
   message.channel.send(client.createEmbedInDescription(playerData.name, fields));
-  const speedMods = getPlayerMods(client, playerMods.mods, 'Speed', 15);
-  if (speedMods.length) {
-    message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Speed Mods`, speedMods));
-  } else {
-    message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Speed Mods`, { name: '😦', value: 'No mods with speed secondary above 15.', inline: true }));
+
+  options = [];
+  if (args.length > 1) {
+    options = args[args.length - 1];
+    options = options.replace(new RegExp('-', 'g'), '');
+    options = Array.from(options);
+    if (options.indexOf('a') < 0 && options.indexOf('s') < 0 && options.indexOf('o') < 0 && options.indexOf('t') < 0 && options.indexOf('l') < 0 && options.indexOf('d') < 0) {
+      message.channel.send(`\`\`\`js\nError: Unrecognized option: ${options}.\n\`\`\``);
+      message.react("☠");
+      return;
+    }
   }
-  const offMods = getPlayerMods(client, playerMods.mods, 'Offense', 100);
-  if (offMods.length) {
-    message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Offense Mods`, offMods));
-  } else {
-    message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Ofense Mods`, { name: '😦', value: 'No mods with offense secondary above 100.', inline: true }));
+  // [ a | t | l | d | s | o ]
+  if (options.indexOf('a') >= 0 || options.indexOf('s') >= 0 || options.indexOf('o') >= 0) {
+    const playerMods = await client.swapi.fetchPlayer(allycode1, 'mods');
+    if (options.indexOf('a') >= 0 || options.indexOf('s') >= 0) {
+      const speedMods = getPlayerMods(client, playerMods.mods, 'Speed', 15);
+      if (speedMods.length) {
+        message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Speed Mods`, speedMods));
+      } else {
+        message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Speed Mods`, { name: '😦', value: 'No mods with speed secondary above 15.', inline: true }));
+      }
+    }
+    if (options.indexOf('a') >= 0 || options.indexOf('o') >= 0) {
+      const offMods = getPlayerMods(client, playerMods.mods, 'Offense', 100);
+      if (offMods.length) {
+        message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Offense Mods`, offMods));
+      } else {
+        message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Ofense Mods`, { name: '😦', value: 'No mods with offense secondary above 100.', inline: true }));
+      }
+    }
+  }
+
+  if (options.indexOf('a') >= 0 || options.indexOf('t') >= 0) {
+    message.channel.send('🚧 Sorry, TW is a work in progress 🚧')
+  }
+
+  if (options.indexOf('a') >= 0 || options.indexOf('l') >= 0) {
+    message.channel.send('🚧 Sorry, LSTB is a work in progress 🚧')
+  }
+
+  if (options.indexOf('a') >= 0 || options.indexOf('d') >= 0) {
+    message.channel.send('🚧 Sorry, DSTB is a work in progress 🚧')
+  }
+
+  if(options.length <= 0) {
+    message.channel.send('Check `help recruit` for more options');
   }
   message.react("👍");
 };
@@ -297,5 +332,5 @@ exports.help = {
   name: "recruit",
   category: "Miscelaneous",
   description: "Gives relevant stats about a potential recruit.",
-  usage: "recruit <allycode>"
+  usage: "recruit <allycode> (Options: [ a | t | l | d | s | o ])\nExample: \nrecruit 123456789\nrecruit 123456789 a\na: all stats\nt: tw stats\nl: lstb stats\nd: dstb stats\ns: speed mods stats\no: offense mods stats"
 };
