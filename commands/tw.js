@@ -2,88 +2,92 @@
 // 1. with one argument: will return data for tw
 // 2. with 2 arguments: will compare data between 2 allycode's guilds for tw
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
-  message.react("🖐");
+  await message.react("🖐");
   if (!args.length) {
-    message.channel.send(`\`\`\`js\nError: tw needs an ally code.\n\`\`\``);
-    message.react("☠");
+    await message.channel.send(`\`\`\`js\nError: tw needs an ally code.\n\`\`\``);
+    await message.react("☠");
     return;
   }
-  allycode1 = args[0].replace(/-/g, '');
+  const allycode1 = args[0].replace(/-/g, '');
   if (!client.isAllyCode(allycode1)) {
-    message.channel.send(`\`\`\`js\nError: ${args[0]} is not an ally code.\n\`\`\``);
-    message.react("☠");
+    await message.channel.send(`\`\`\`js\nError: ${args[0]} is not an ally code.\n\`\`\``);
+    await message.react("☠");
     return;
   }
 
   const guild1 = await client.swapi.fetchGuild(allycode1, 'roster');
-  const details1 = await client.swapi.fetchGuild(allycode1, 'details'); 
+  const details1 = await client.swapi.fetchGuild(allycode1, 'details');
   if (guild1.hasOwnProperty('error')) {
-    message.channel.send(`\`\`\`js\nError: ${guild1.error}.\n\`\`\``);
-    message.react("☠");
+    await message.channel.send(`\`\`\`js\nError: ${guild1.error}.\n\`\`\``);
+    await message.react("☠");
     return;
   }
 
   if (guild1.hasOwnProperty('response')) {
-    message.channel.send(`\`\`\`js\nError: Request time out requesting roster for ${allycode1}\n\`\`\``);
-    message.react("☠");
+    await message.channel.send(`\`\`\`js\nError: Request time out requesting roster for ${allycode1}\n\`\`\``);
+    await message.react("☠");
     return;
   }
 
   const zetaData = await client.swapi.fetchData('zetas');
-  stats1 = getGuildStats(client, guild1);
+  const stats1 = await getGuildStats(client, guild1);
   // message.channel.send(`\`\`\`js\n${guild1.name}: ${JSON.stringify(stats1)}\n\`\`\``);
+  
+  const fields = [];
+  let val = '';
+  let lfill = 0;
+
   if (args.length > 1) {
-    allycode2 = args[1].replace(/-/g, '');
+    const allycode2 = args[1].replace(/-/g, '');
     if (!client.isAllyCode(allycode2)) {
-      message.channel.send(`\`\`\`js\nError: ${args[1]} is not an ally code.\n\`\`\``);
-      message.react("☠");
+      await message.channel.send(`\`\`\`js\nError: ${args[1]} is not an ally code.\n\`\`\``);
+      await message.react("☠");
       return;
     }
     const guild2 = await client.swapi.fetchGuild(allycode2, 'roster');
-    const details2 = await client.swapi.fetchGuild(allycode2, 'details'); 
+    const details2 = await client.swapi.fetchGuild(allycode2, 'details');
     if (guild2.hasOwnProperty('error')) {
-      message.channel.send(`\`\`\`js\nError: ${guild2.error}\n\`\`\``);
-      message.react("☠");
-      return;
-    } 
-    
-    if (guild2.hasOwnProperty('response')) {
-      message.channel.send(`\`\`\`js\nError: Request time out requesting roster for ${allycode2}\n\`\`\``);
-      message.react("☠");
+      await message.channel.send(`\`\`\`js\nError: ${guild2.error}\n\`\`\``);
+      await message.react("☠");
       return;
     }
-    stats2 = getGuildStats(client, guild2);
+
+    if (guild2.hasOwnProperty('response')) {
+      await message.channel.send(`\`\`\`js\nError: Request time out requesting roster for ${allycode2}\n\`\`\``);
+      await message.react("☠");
+      return;
+    }
+    const stats2 = await getGuildStats(client, guild2);
     // message.channel.send(`\`\`\`js\n${guild2.name}: ${JSON.stringify(stats2)}\n\`\`\``);
 
-    fields = [];
-    Object.keys(stats1).forEach(function (key) {
-      let val = `${stats1[key]} vs ${stats2[key]}`;
-      let lfill = (55 - val.length) / 2;
+    for (const key of Object.keys(stats1)) {
+      val = `${stats1[key]} vs ${stats2[key]}`;
+      lfill = (55 - val.length) / 2;
       if (lfill < 0) {
         lfill = 0;
       }
       val = `${' '.repeat(lfill)}${val}`;
       fields.push({ name: key, value: `\`\`\`js\n${val}\`\`\`` });
-    });
-    message.channel.send(client.createEmbed(details1.name + " vs " + details2.name, fields));
+    }
+    await message.channel.send(client.createEmbed(details1.name + " vs " + details2.name, fields));
   } else {
     fields = [];
-    Object.keys(stats1).forEach(function (key) {
-      let val = `${stats1[key]}`;
-      let lfill = (55 - val.length) / 2;
+    for (const key of Object.keys(stats1)) {
+      val = `${stats1[key]}`;
+      lfill = (55 - val.length) / 2;
       if (lfill < 0) {
         lfill = 0;
       }
       val = `${' '.repeat(lfill)}${val}`;
       fields.push({ name: key, value: `\`\`\`js\n${val}\`\`\`` });
-    });
-    message.channel.send(client.createEmbed(details1.name, fields));    
+    }
+    await message.channel.send(client.createEmbed(details1.name, fields));
   }
-  message.react("👍");
+  await message.react("👍");
 };
 
-function getGuildStats(client, roster) {
-  res = {};
+async function getGuildStats(client, roster) {
+  const res = {};
   res['Members'] = roster.length;
   res['Total GP'] = 0;
   res['Average Arena Rank'] = 0;
@@ -96,15 +100,17 @@ function getGuildStats(client, roster) {
   res['Number of G11'] = 0;
   res['Number of G12'] = 0;
   res['Number of Zetas'] = 0;
-  roster.forEach(element => {
+  for (const r of Object.keys(roster)) {
+    const element = roster[r];
     res['Total GP'] += element.gpFull;
     res['Average Arena Rank'] += element.arena.char.rank;
     res['Average Fleet Arena Rank'] += element.arena.ship.rank;
 
-    element.roster.forEach(toon => {
-      tempZetas = 0;
-      isG11 = false;
-      isG12 = false;
+    for (const t of Object.keys(element.roster)) {
+      const toon = element.roster[t];
+      let tempZetas = 0;
+      let isG11 = false;
+      let isG12 = false;
       if (toon.gear == 11) {
         res['Number of G11']++;
         isG11 = true;
@@ -114,12 +120,13 @@ function getGuildStats(client, roster) {
         isG12 = true;
       }
 
-      toon.skills.forEach(skill => {
+      for (const s of Object.keys(toon.skills)) {
+        const skill = toon.skills[s];
         if (skill.isZeta && skill.tier >= 8) {
           res['Number of Zetas']++;
           tempZetas++;
         }
-      });
+      }
 
       switch (toon.defId) {
         case 'DARTHTRAYA':
@@ -142,8 +149,8 @@ function getGuildStats(client, roster) {
           }
           break;
       }
-    });
-  });
+    }
+  }
   res['Total GP'] = client.numberWithCommas(res['Total GP']);
   res['Average Arena Rank'] /= roster.length;
   res['Average Arena Rank'] = res['Average Arena Rank'].toFixed(2);

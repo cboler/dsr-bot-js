@@ -3,42 +3,42 @@ const hstrTeams = require("../data/hstrTeams.json");
 const MAX_HSTR_TEAMS_PER_EMBED = 28;
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
-  message.react("🖐");
-  options = 'p';
+  await message.react("🖐");
+  let options = 'p';
   if (args.length) {
     options = args[args.length - 1];
     options = options.replace(new RegExp('-', 'g'), '');
     options = Array.from(options);
     if (options.indexOf('p') < 0 && options.indexOf('c')) {
-      message.channel.send(`\`\`\`js\nError: Unrecognized option: ${options}.\n\`\`\``);
-      message.react("☠");
+      await message.channel.send(`\`\`\`js\nError: Unrecognized option: ${options}.\n\`\`\``);
+      await message.react("☠");
       return;
     }
   }
 
-  let dm = message.channel;
+  let dm = await message.channel;
   if (options.indexOf('p') >= 0) {
-    dm = message.author;
+    dm = await message.author;
   }
 
   const charMedia = await client.swapi.fetchData('units');
-  msg = getHstrTeams(charMedia);
+  const msg = getHstrTeams(charMedia);
   Object.keys(msg).sort().forEach(function (phase, i) {
-    teams = Object.keys(msg[phase]).sort();
+    const teams = Object.keys(msg[phase]).sort();
     if (teams.length < MAX_HSTR_TEAMS_PER_EMBED) {
-      fields = [];
+      const fields = [];
       for (const t in teams) {
         if(!teams.hasOwnProperty(t)) {
           continue;
         }        
-        team = teams[t];
+        const team = teams[t];
         fields.push({ name: team, value: msg[phase][teams[t]] });
       }
       dm.send(client.createEmbed(`HSTR ${phase} Assignments`, fields));
     } else {
-      nb = Math.ceil(teams.length / MAX_HSTR_TEAMS_PER_EMBED);
+      const nb = Math.ceil(teams.length / MAX_HSTR_TEAMS_PER_EMBED);
       for (let i = 1; i < nb + 1; i++) {
-        fields = [];
+        const fields = [];
         for (const teamidx in teams.slice((i - 1) * MAX_HSTR_TEAMS_PER_EMBED, i * i * MAX_HSTR_TEAMS_PER_EMBED < teams.length ? MAX_HSTR_TEAMS_PER_EMBED : teams.length)) {
           if(!teams.hasOwnProperty(teamidx)) {
             continue;
@@ -49,19 +49,19 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       }
     }
   });
-  message.react("👍");
+  await message.react("👍");
 };
 
 function getHstrTeams(charMedia) {
-  result = {};
+  const result = {};
   for (const phase of Object.keys(hstrTeams)) {
-    teams = hstrTeams[phase];
+    const teams = hstrTeams[phase];
     result[phase] = {};
     for (const t1 of Object.keys(teams)) {
-      team = teams[t1];
+      const team = teams[t1];
       let s = '';
       for (const t2 in team['TOONS']) {
-        toon = team['TOONS'][t2];
+        const toon = team['TOONS'][t2];
         for (c in charMedia) {
           if (c === toon) {
             s += charMedia[c].name + ', ';

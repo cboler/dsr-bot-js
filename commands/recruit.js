@@ -1,49 +1,49 @@
 // This command analyzes a roster for recruitment
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
-  message.react("🖐");
+  await message.react("🖐");
   if (!args.length) {
-    message.channel.send(`\`\`\`js\nError: recruit needs an ally code.\n\`\`\``);
-    message.react("☠");
+    await message.channel.send(`\`\`\`js\nError: recruit needs an ally code.\n\`\`\``);
+    await message.react("☠");
     return;
   }
-  allycode1 = args[0].replace(/-/g, '');
+  const allycode1 = args[0].replace(/-/g, '');
   if (!client.isAllyCode(allycode1)) {
-    message.channel.send(`\`\`\`js\nError: ${args[0]} is not an ally code.\n\`\`\``);
-    message.react("☠");
+    await message.channel.send(`\`\`\`js\nError: ${args[0]} is not an ally code.\n\`\`\``);
+    await message.react("☠");
     return;
   }
 
   const playerData = await client.swapi.fetchPlayer(allycode1);
   const charData = await client.swapi.fetchData('units');
   if (playerData.hasOwnProperty('error')) {
-    message.channel.send(`\`\`\`js\nError: ${playerData.error}.\n\`\`\``);
-    message.react("☠");
+    await message.channel.send(`\`\`\`js\nError: ${playerData.error}.\n\`\`\``);
+    await message.react("☠");
     return;
   }
 
   if (playerData.hasOwnProperty('response')) {
-    message.channel.send(`\`\`\`js\nError: Request time out requesting roster for ${allycode1}\n\`\`\``);
-    message.react("☠");
+    await message.channel.send(`\`\`\`js\nError: Request time out requesting roster for ${allycode1}\n\`\`\``);
+    await message.react("☠");
     return;
   }
 
   const stats = getPlayerStats(client, playerData);
   // message.channel.send(`\`\`\`js\n${guild1.name}: ${JSON.stringify(stats1)}\n\`\`\``);
-  fields = [];
+  const fields = [];
   Object.keys(stats).forEach(function (key) {
     let val = `${stats[key]}`;
     fields.push({ name: key, value: val });
   });
-  message.channel.send(client.createEmbedInDescription(playerData.name, fields));
+  await message.channel.send(client.createEmbedInDescription(playerData.name, fields));
 
-  options = [];
+  const options = [];
   if (args.length > 1) {
     options = args[args.length - 1];
     options = options.replace(new RegExp('-', 'g'), '');
     options = Array.from(options);
     if (options.indexOf('a') < 0 && options.indexOf('s') < 0 && options.indexOf('o') < 0 && options.indexOf('t') < 0 && options.indexOf('l') < 0 && options.indexOf('d') < 0) {
-      message.channel.send(`\`\`\`js\nError: Unrecognized option: ${options}.\n\`\`\``);
-      message.react("☠");
+      await message.channel.send(`\`\`\`js\nError: Unrecognized option: ${options}.\n\`\`\``);
+      await message.react("☠");
       return;
     }
   }
@@ -53,41 +53,41 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     if (options.indexOf('a') >= 0 || options.indexOf('s') >= 0) {
       const speedMods = getPlayerMods(client, playerMods.mods, 'Speed', 15);
       if (speedMods.length) {
-        message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Speed Mods`, speedMods));
+        await message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Speed Mods`, speedMods));
       } else {
-        message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Speed Mods`, { name: '😦', value: 'No mods with speed secondary above 15.', inline: true }));
+        await message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Speed Mods`, { name: '😦', value: 'No mods with speed secondary above 15.', inline: true }));
       }
     }
     if (options.indexOf('a') >= 0 || options.indexOf('o') >= 0) {
       const offMods = getPlayerMods(client, playerMods.mods, 'Offense', 100);
       if (offMods.length) {
-        message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Offense Mods`, offMods));
+        await message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Offense Mods`, offMods));
       } else {
-        message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Ofense Mods`, { name: '😦', value: 'No mods with offense secondary above 100.', inline: true }));
+        await message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Ofense Mods`, { name: '😦', value: 'No mods with offense secondary above 100.', inline: true }));
       }
     }
   }
 
   if (options.indexOf('a') >= 0 || options.indexOf('t') >= 0) {
-    message.channel.send('🚧 Sorry, TW is a work in progress 🚧')
+    await message.channel.send('🚧 Sorry, TW is a work in progress 🚧')
   }
 
   if (options.indexOf('a') >= 0 || options.indexOf('l') >= 0) {
-    message.channel.send('🚧 Sorry, LSTB is a work in progress 🚧')
+    await message.channel.send('🚧 Sorry, LSTB is a work in progress 🚧')
   }
 
   if (options.indexOf('a') >= 0 || options.indexOf('d') >= 0) {
-    message.channel.send('🚧 Sorry, DSTB is a work in progress 🚧')
+    await message.channel.send('🚧 Sorry, DSTB is a work in progress 🚧')
   }
 
   if(options.length <= 0) {
-    message.channel.send('Check `help recruit` for more options');
+    await message.channel.send('Check `help recruit` for more options');
   }
-  message.react("👍");
+  await message.react("👍");
 };
 
 function getPlayerStats(client, data) {
-  res = {};
+  const res = {};
   res['Level'] = data.level;
   res['GP'] = client.numberWithCommas(data.gpFull);
   res['Character GP'] = client.numberWithCommas(data.gpChar);
@@ -142,9 +142,9 @@ function getPlayerStats(client, data) {
   res['Number of G11'] = 0;
   res['Number of G12'] = 0;
   data.roster.forEach(toon => {
-    tempZetas = 0;
-    isG11 = false;
-    isG12 = false;
+    let tempZetas = 0;
+    let isG11 = false;
+    let isG12 = false;
     if (toon.gear == 11) {
       res['Number of G11']++;
       isG11 = true;
@@ -185,7 +185,7 @@ function getPlayerStats(client, data) {
 }
 
 function getPlayerMods(client, data, type, minVal) {
-  mods = [];
+  let mods = [];
   for (d in data) {
     if (!data.hasOwnProperty(d)) {
       continue;

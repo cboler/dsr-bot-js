@@ -3,88 +3,92 @@ const hstrTeams = require("../data/hstrTeams.json");
 const MAX_HSTR_TEAMS_PER_EMBED = 28;
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
-  message.react("🖐");
+  await message.react("🖐");
   if (!args.length) {
-    message.channel.send(`\`\`\`js\nError: sithraid needs an ally code.\n\`\`\``);
-    message.react("☠");
+    await message.channel.send(`\`\`\`js\nError: sithraid needs an ally code.\n\`\`\``);
+    await message.react("☠");
     return;
   }
-  allycode = args[0].replace(/-/g, '');
+  const allycode = args[0].replace(/-/g, '');
   if (!client.isAllyCode(allycode)) {
-    message.channel.send(`\`\`\`js\nError: ${args[0]} is not an ally code.\n\`\`\``);
-    message.react("☠");
+    await message.channel.send(`\`\`\`js\nError: ${args[0]} is not an ally code.\n\`\`\``);
+    await message.react("☠");
     return;
   }
 
-  options = 'g';
+  let options = 'g';
   if (args.length > 1) {
     options = args[args.length - 1];
     options = options.replace(new RegExp('-', 'g'), '');
     options = Array.from(options);
     if (options.indexOf('g') < 0 && options.indexOf('p') < 0 && options.indexOf('d') < 0) {
-      message.channel.send(`\`\`\`js\nError: Unrecognized option: ${options}.\n\`\`\``);
-      message.react("☠");
+      await message.channel.send(`\`\`\`js\nError: Unrecognized option: ${options}.\n\`\`\``);
+      await message.react("☠");
       return;
     }
   }
 
-  let guild = null;
+  let title = 'HSTR Readiness';
+  let msg = null;
+  let breakdown = null;
   const zetaData = await client.swapi.fetchData('zetas');
   const charMedia = await client.swapi.fetchData('units');
   if (options.indexOf('p') >= 0) {
-    player = await client.swapi.fetchPlayer(allycode);
+    const player = await client.swapi.fetchPlayer(allycode);
+    title = player.name;
     [msg, breakdown] = analyzeGuildHstrReadiness(client, [player], zetaData, charMedia);
   } else {
-    guild = await client.swapi.fetchGuild(allycode);
+    const guild = await client.swapi.fetchGuild(allycode);
+    title = guild.name;
     [msg, breakdown] = analyzeGuildHstrReadiness(client, guild.roster, zetaData, charMedia);
   }
 
-  fields = [];
+  const fields = [];
   for (const m in msg) {
     if (!msg.hasOwnProperty(m)) {
       continue;
     }
     fields.push({ name: msg[m][0], value: msg[m][1] });
   }
-  message.channel.send(client.createEmbed('HSTR Readiness', fields));
+  await message.channel.send(client.createEmbed(title, fields));
 
   if (options.indexOf('d') >= 0) {
-    var dm = message.author;
+    let dm = await message.author;
     if (options.indexOf('c') >= 0) {
-      dm = message.channel;
+      dm = await message.channel;
     }
     Object.keys(breakdown)
       .sort()
       .forEach(function (v, i) {
-        teams = Object.keys(breakdown[v]).sort();
+        const teams = Object.keys(breakdown[v]).sort();
         if (teams.length < MAX_HSTR_TEAMS_PER_EMBED) {
-          fields = [];
+          const fieldsBD = [];
           for (const t in teams) {
-            team = teams[t];
+            const team = teams[t];
             if (!breakdown[v].hasOwnProperty(team)) {
               continue;
             }
-            fields.push({ name: `${team} - ${breakdown[v][team]['comp']} (Goal: ${breakdown[v][team]['goal']}%) - eligibility: ${breakdown[v][team]['eligibility']}`, value: breakdown[v][team]['players'].join(", ") });
+            fieldsBD.push({ name: `${team} - ${breakdown[v][team]['comp']} (Goal: ${breakdown[v][team]['goal']}%) - eligibility: ${breakdown[v][team]['eligibility']}`, value: breakdown[v][team]['players'].join(", ") });
           }
-          dm.send(client.createEmbed(`HSTR ${v} Assignments`, fields));
+          dm.send(client.createEmbed(`${title}'s HSTR ${v} Assignments`, fieldsBD));
         } else {
-          nb = Math.ceil(teams.length / MAX_HSTR_TEAMS_PER_EMBED);
+          const nb = Math.ceil(teams.length / MAX_HSTR_TEAMS_PER_EMBED);
           for (let i = 0; i < nb + 1; i++) {
-            fields = [];
+            const fieldsBD = [];
             for (const teamName in teams.slice((i - 1) * MAX_HSTR_TEAMS_PER_EMBED, i * i * MAX_HSTR_TEAMS_PER_EMBED < teams.length ? MAX_HSTR_TEAMS_PER_EMBED : teams.length)) {
-              fields.push({ name: `${team} - ${breakdown[v][team]['comp']} (Goal: ${breakdown[v][team]['goal']}%) - eligibility: ${breakdown[v][team]['eligibility']}`, value: breakdown[v][team]['players'].join(", ") });
+              fieldsBD.push({ name: `${team} - ${breakdown[v][team]['comp']} (Goal: ${breakdown[v][team]['goal']}%) - eligibility: ${breakdown[v][team]['eligibility']}`, value: breakdown[v][team]['players'].join(", ") });
             }
-            dm.send(client.createEmbed(`HSTR ${v} Assignments (${i}/${nb})`, fields));
+            dm.send(client.createEmbed(`${title}'s HSTR ${v} Assignments (${i}/${nb})`, fieldsBD));
           }
         }
       });
 
   }
-  message.react("👍");
+  await message.react("👍");
 };
 
 function createGuildDict(roster, zetaData) {
-  d = {};
+  const d = {};
   roster.forEach(player => {
     d[player.name] = {};
     d[player.name]['zetas'] = [];
@@ -93,7 +97,7 @@ function createGuildDict(roster, zetaData) {
         d[player.name][toon.defId] = toon;
         toon.skills.forEach(skill => {
           if (skill.isZeta && skill.tier >= 8) {
-            zetaName = '';
+            let zetaName = '';
             if (zetaData.hasOwnProperty(skill.name)) {
               zetaName = zetaData[skill.name].name;
             } else {
@@ -108,34 +112,33 @@ function createGuildDict(roster, zetaData) {
   return d;
 }
 
-
 function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
-  var globalDict = createGuildDict(roster, zetaData);
+  let globalDict = createGuildDict(roster, zetaData);
 
-  readiness = {}
-  for (var phase in hstrTeams) {
-    var teams = hstrTeams[phase];
-    var total = 100;
+  const readiness = {};
+  for (let phase in hstrTeams) {
+    let teams = hstrTeams[phase];
+    let total = 100;
     if (phase == 'PHASE4_WITH_DN') {
       total = 95;
     }
     readiness[phase] = { 'remaining': total, 'teams': [] };
-    var phaseReady = false;
-    for (var player in globalDict) {
+    let phaseReady = false;
+    for (let player in globalDict) {
       if (phaseReady) {
         break;
       }
-      var playerRoster = globalDict[player];
+      const playerRoster = globalDict[player];
 
-      var teamsLeft = true;
+      let teamsLeft = true;
       while (teamsLeft) {
-        var temp = {};
-        for (var i in teams) {
-          team = teams[i];
-          var power = 0;
-          var IDS = [];
-          var playerZetas = playerRoster['zetas'];
-          var teamZetas = null;
+        let temp = {};
+        for (let i in teams) {
+          const team = teams[i];
+          let power = 0;
+          let IDS = [];
+          let playerZetas = playerRoster['zetas'];
+          let teamZetas = null;
           if (team.hasOwnProperty('ZETAS')) {
             teamZetas = team.ZETAS;
           }
@@ -151,17 +154,17 @@ function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
               continue;
             }
           }
-          for (var j in team['TOONS']) {
-            toon = team['TOONS'][j];
+          for (let j in team['TOONS']) {
+            const toon = team['TOONS'][j];
             if (!playerRoster.hasOwnProperty(toon)) {
               break;
             }
-            var playerToon = playerRoster[toon];
+            let playerToon = playerRoster[toon];
             power += playerToon.gp;
             IDS.push(toon);
           }
           if (power > team['MIN_GP']) {
-            var eligibility = `Min GP: ${team['MIN_GP']}`;
+            let eligibility = `Min GP: ${team['MIN_GP']}`;
             if (team.hasOwnProperty('ZETAS')) {
               eligibility += ` / required zetas: ${team['ZETAS'].join(", ")}`;
             }
@@ -169,11 +172,11 @@ function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
           }
         }
 
-        var max_gp = 0;
-        var goal = 0;
-        winner = null;
-        for (var team_id in temp) {
-          data = temp[team_id];
+        let max_gp = 0;
+        let goal = 0;
+        let winner = null;
+        for (let team_id in temp) {
+          const data = temp[team_id];
           if (data['goal'] > goal) {
             winner = data;
             max_gp = data['power'];
@@ -191,8 +194,8 @@ function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
               'player_name': player, 'team_name': winner['name'], 'goal': winner['goal'],
               'eligibility': winner['eligibility']
             });
-          for (var id in winner['IDS']) {
-            toonID = winner['IDS'][id];
+          for (let id in winner['IDS']) {
+            const toonID = winner['IDS'][id];
             delete globalDict[player][toonID];
           }
           if (readiness[phase]['remaining'] <= 0) {
@@ -206,9 +209,9 @@ function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
       }
     }
   }
-  var msg = [];
-  var sorted = [];
-  for (var key in readiness) {
+  let msg = [];
+  let sorted = [];
+  for (let key in readiness) {
     sorted[sorted.length] = key;
   }
   sorted.sort();
@@ -216,20 +219,20 @@ function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
     if (!readiness.hasOwnProperty(sorted[k])) {
       continue;
     }
-    var phase = sorted[k];
-    rem = readiness[phase]['remaining'];
+    let phase = sorted[k];
+    const rem = readiness[phase]['remaining'];
     if (phase == 'PHASE4_WITH_DN' && readiness[phase]['remaining'] > 0) {
       rem = rem + 5;
     }
     msg.push([phase, `${100 - rem}% ready.`]);
   }
 
-  var leftover_gp = 0;
-  var nb_toons = 0;
-  for (var player_name in globalDict) {
-    toons = globalDict[player_name];
-    for (var toon_name in toons) {
-      toon_data = toons[toon_name];
+  let leftover_gp = 0;
+  let nb_toons = 0;
+  for (let player_name in globalDict) {
+    const toons = globalDict[player_name];
+    for (let toon_name in toons) {
+      const toon_data = toons[toon_name];
       if (toon_data['gp'] > 10000) {
         leftover_gp += toon_data['gp'];
         nb_toons += 1;
@@ -245,14 +248,14 @@ function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
     `${(nb_toons / 50).toFixed(2)} toons left for P4 per player (${((nb_toons / 50) / 5).toFixed(2)} teams).`]);
 
   for (const phase in readiness) {
-    phase_data = readiness[phase];
+    const phase_data = readiness[phase];
     for (const dataTeam in phase_data['teams']) {
       const team = phase_data['teams'][dataTeam];
       for (const ht in hstrTeams[phase]) {
         const t = hstrTeams[phase][ht];
         if (t['NAME'] == team['team_name']) {
-          temp = t['TOONS'];
-          var team_str = [];
+          const temp = t['TOONS'];
+          let team_str = [];
           for (te in temp) {
             const tem = temp[te];
             for (cID in char_media) {
@@ -276,9 +279,9 @@ function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
 }
 
 function create_breakdown(readiness) {
-  breakdown = {};
-  var sorted = [];
-  for (var key in readiness) {
+  const breakdown = {};
+  const sorted = [];
+  for (let key in readiness) {
     sorted[sorted.length] = key;
   }
   sorted.sort();
@@ -286,13 +289,13 @@ function create_breakdown(readiness) {
     if (!readiness.hasOwnProperty(sorted[k])) {
       continue;
     }
-    var v = sorted[k];
+    let v = sorted[k];
     breakdown[v] = {};
     for (t in readiness[v]['teams']) {
       if (!readiness[v]['teams'].hasOwnProperty(t)) {
         continue;
       }
-      team = readiness[v]['teams'][t];
+      const team = readiness[v]['teams'][t];
       if (!breakdown[v].hasOwnProperty(team['team_name'])) {
         breakdown[v][team['team_name']] = {
           'goal': team['goal'], 'comp': team['comp'], 'eligibility': team['eligibility'],
