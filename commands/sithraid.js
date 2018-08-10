@@ -220,7 +220,7 @@ function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
       continue;
     }
     let phase = sorted[k];
-    const rem = readiness[phase]['remaining'];
+    let rem = readiness[phase]['remaining'];
     if (phase == 'PHASE4_WITH_DN' && readiness[phase]['remaining'] > 0) {
       rem = rem + 5;
     }
