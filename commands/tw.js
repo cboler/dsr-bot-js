@@ -71,7 +71,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     }
     await message.channel.send(client.createEmbed(details1.name + " vs " + details2.name, fields));
   } else {
-    fields = [];
     for (const key of Object.keys(stats1)) {
       val = `${stats1[key]}`;
       lfill = (55 - val.length) / 2;
