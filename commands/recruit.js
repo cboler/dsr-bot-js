@@ -36,7 +36,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   });
   await message.channel.send(client.createEmbedInDescription(playerData.name, fields));
 
-  const options = [];
+  let options = [];
   if (args.length > 1) {
     options = args[args.length - 1];
     options = options.replace(new RegExp('-', 'g'), '');
@@ -154,7 +154,7 @@ function getPlayerStats(client, data) {
       isG12 = true;
     }
 
-    const zetas = [];
+    let zetas = [];
     toon.skills.forEach(skill => {
       if (skill.isZeta && skill.tier >= 8) {
         zetas.push(`${skill.name} (${skill.type})`);
