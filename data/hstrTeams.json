@@ -25,7 +25,7 @@
                 "REY",
                 "VISASMARR"
             ],
-            "GOAL": 4,
+            "GOAL": 4.5,
             "MIN_GP": 80000,
             "ZETAS": [
                 "Inspirational Presence",
@@ -41,7 +41,7 @@
                 "REY",
                 "RESISTANCETROOPER"
             ],
-            "GOAL": 4,
+            "GOAL": 5,
             "MIN_GP": 80000,
             "ZETAS": [
                 "Inspirational Presence"
@@ -56,7 +56,7 @@
                 "REY",
                 "BARRISSOFFEE"
             ],
-            "GOAL": 4,
+            "GOAL": 4.001,
             "MIN_GP": 80000,
             "ZETAS": [
                 "Inspirational Presence"
@@ -71,7 +71,7 @@
                 "REY",
                 "HERMITYODA"
             ],
-            "GOAL": 4,
+            "GOAL": 4.4,
             "MIN_GP": 80000,
             "ZETAS": [
                 "Inspirational Presence"
@@ -105,7 +105,7 @@
                 "PAO",
                 "CHIRRUTIMWE"
             ],
-            "GOAL": 4,
+            "GOAL": 4.001,
             "MIN_GP": 75000,
             "ZETAS": [
                 "Shoots First"

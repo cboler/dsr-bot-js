@@ -224,7 +224,7 @@ function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
     if (phase == 'PHASE4_WITH_DN' && readiness[phase]['remaining'] > 0) {
       rem = rem + 5;
     }
-    msg.push([phase, `${100 - rem}% ready.`]);
+    msg.push([phase, `${(100 - rem).toFixed(2)}% ready.`]);
   }
 
   let leftover_gp = 0;
@@ -298,7 +298,7 @@ function create_breakdown(readiness) {
       const team = readiness[v]['teams'][t];
       if (!breakdown[v].hasOwnProperty(team['team_name'])) {
         breakdown[v][team['team_name']] = {
-          'goal': team['goal'], 'comp': team['comp'], 'eligibility': team['eligibility'],
+          'goal': team['goal'].toFixed(2), 'comp': team['comp'], 'eligibility': team['eligibility'],
           'players': []
         };
       }
