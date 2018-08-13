@@ -134,6 +134,9 @@ function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
       while (teamsLeft) {
         let temp = {};
         for (let i in teams) {
+          if (!teams.hasOwnProperty(i)) {
+            continue;
+          }
           const team = teams[i];
           let power = 0;
           let IDS = [];
@@ -162,6 +165,9 @@ function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
             let playerToon = playerRoster[toon];
             power += playerToon.gp;
             IDS.push(toon);
+          }
+          if (IDS.length !== team['TOONS'].length) {
+            continue;
           }
           if (power > team['MIN_GP']) {
             let eligibility = `Min GP: ${team['MIN_GP']}`;
