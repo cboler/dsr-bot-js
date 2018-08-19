@@ -261,6 +261,7 @@ function modToField(client, mod, type) {
       slot = '▲';
       break;
   }
+  
   let value = `\`\`\`asciidoc\n= ${client.nameDict[mod.unit]} =\n`;
   if (mod.secondary_1[0] === type) {
     value += `[${mod.secondary_1[0]} ${mod.secondary_1[1]}]\n`;
