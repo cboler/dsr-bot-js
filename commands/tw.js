@@ -15,8 +15,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     return;
   }
 
-  const guild1 = await client.swapi.fetchGuild(allycode1, 'roster');
-  const details1 = await client.swapi.fetchGuild(allycode1, 'details');
+  const guild1 = await client.swapi.fetchGuild({
+    allycode: allycode1
+  });
+
   if (guild1.hasOwnProperty('error')) {
     await message.channel.send(`\`\`\`js\nError: ${guild1.error}.\n\`\`\``);
     await message.react("☠");
@@ -29,10 +31,11 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     return;
   }
 
-  const zetaData = await client.swapi.fetchData('zetas');
-  const stats1 = await getGuildStats(client, guild1);
-  // message.channel.send(`\`\`\`js\n${guild1.name}: ${JSON.stringify(stats1)}\n\`\`\``);
-  
+  let allyCodes1 = guild1.roster.map(r => r.allyCode);
+  const roster1 = await client.swapi.fetchPlayer({ allycode: allyCodes1 });
+
+  const stats1 = await getGuildStats(client, roster1);
+
   const fields = [];
   let val = '';
   let lfill = 0;
@@ -44,8 +47,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       await message.react("☠");
       return;
     }
-    const guild2 = await client.swapi.fetchGuild(allycode2, 'roster');
-    const details2 = await client.swapi.fetchGuild(allycode2, 'details');
+    const guild2 = await client.swapi.fetchGuild({
+      allycode: allycode2
+    });
+
     if (guild2.hasOwnProperty('error')) {
       await message.channel.send(`\`\`\`js\nError: ${guild2.error}\n\`\`\``);
       await message.react("☠");
@@ -57,8 +62,12 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       await message.react("☠");
       return;
     }
-    const stats2 = await getGuildStats(client, guild2);
-    // message.channel.send(`\`\`\`js\n${guild2.name}: ${JSON.stringify(stats2)}\n\`\`\``);
+
+
+    let allyCodes2 = guild2.roster.map(r => r.allyCode);
+    const roster2 = await client.swapi.fetchPlayer({ allycode: allyCodes2 });
+
+    const stats2 = await getGuildStats(client, roster2);
 
     for (const key of Object.keys(stats1)) {
       val = `${stats1[key]} vs ${stats2[key]}`;
@@ -69,7 +78,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       val = `${' '.repeat(lfill)}${val}`;
       fields.push({ name: key, value: `\`\`\`js\n${val}\`\`\`` });
     }
-    await message.channel.send(client.createEmbed(details1.name + " vs " + details2.name, fields));
+    await message.channel.send(client.createEmbed(guild1.name + " vs " + guild2.name, fields));
   } else {
     for (const key of Object.keys(stats1)) {
       val = `${stats1[key]}`;
@@ -80,7 +89,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       val = `${' '.repeat(lfill)}${val}`;
       fields.push({ name: key, value: `\`\`\`js\n${val}\`\`\`` });
     }
-    await message.channel.send(client.createEmbed(details1.name, fields));
+    await message.channel.send(client.createEmbed(guild1.name, fields));
   }
   await message.react("👍");
 };
@@ -110,11 +119,11 @@ async function getGuildStats(client, roster) {
       let tempZetas = 0;
       let isG11 = false;
       let isG12 = false;
-      if (toon.gear == 11) {
+      if (toon.gear === 11) {
         res['Number of G11']++;
         isG11 = true;
       }
-      if (toon.gear == 12) {
+      if (toon.gear === 12) {
         res['Number of G12']++;
         isG12 = true;
       }
