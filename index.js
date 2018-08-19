@@ -34,6 +34,9 @@ require("./modules/functions.js")(client);
 // custom swgoh utils
 require("./modules/utils.js")(client);
 
+// custom swapi utils
+require("./modules/swapiUtils.js")(client);
+
 // Aliases and commands are put in collections where they can be read from,
 // catalogued, listed, etc.
 client.commands = new Enmap();
@@ -48,6 +51,46 @@ client.settings = new Enmap({provider: new EnmapLevel({name: "settings"})});
 // we need to wrap stuff in an anonymous function. It's annoying but it works.
 
 const init = async () => {
+
+  const unitsList = await client.swapi.fetchData({
+    collection: 'unitsList',
+    match: { rarity: 7 },
+    language: 'eng_us',
+    project: {
+      baseId: 1,
+      nameKey: 1
+    }
+  });
+
+  let skills = await client.swapi.fetchData({
+    collection: 'skillList',
+    language: 'eng_us',
+    project: {
+      id: 1,
+      abilityReference: 1,
+      isZeta: 1
+    }
+  });
+
+  const abilities = await client.swapi.fetchData({
+    collection: 'abilityList',
+    language: 'eng_us',
+    project: {
+      id: 1,
+      nameKey: 1,
+      type: 1
+    }
+  });
+
+  client.nameDict = {};
+  for (const u of unitsList) {
+    client.nameDict[u.baseId] = u.name;
+  }
+
+  client.skillsDict = {};
+  for(const a of skills) {
+    client.skillsDict[a.id] = {name: abilities.filter(y => y.id === skills.filter(x => x.id === a.id)[0].abilityReference)[0].name, type:a.id.split('skill_')[0]};
+  }
 
   // Here we load **commands** into memory, as a collection, so they're accessible
   // here and everywhere else.

@@ -13,8 +13,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     return;
   }
 
-  const playerData = await client.swapi.fetchPlayer(allycode1);
-  const charData = await client.swapi.fetchData('units');
+  const playerData = await client.swapi.fetchPlayer({ allycode: allycode1 });
+
   if (playerData.hasOwnProperty('error')) {
     await message.channel.send(`\`\`\`js\nError: ${playerData.error}.\n\`\`\``);
     await message.react("☠");
@@ -49,9 +49,14 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
   // [ a | t | l | d | s | o ]
   if (options.indexOf('a') >= 0 || options.indexOf('s') >= 0 || options.indexOf('o') >= 0) {
-    const playerMods = await client.swapi.fetchPlayer(allycode1, 'mods');
+    const playerUnits = await client.swapi.fetchUnits({
+      allycode: [allycode1],
+      mods: true
+    });
+    const playerMods = client.getModsFromPlayer(playerUnits);
+    
     if (options.indexOf('a') >= 0 || options.indexOf('s') >= 0) {
-      const speedMods = getPlayerMods(client, playerMods.mods, 'Speed', 15);
+      const speedMods = getPlayerMods(client, playerMods, 'Speed', 15);
       if (speedMods.length) {
         await message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Speed Mods`, speedMods));
       } else {
@@ -59,7 +64,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       }
     }
     if (options.indexOf('a') >= 0 || options.indexOf('o') >= 0) {
-      const offMods = getPlayerMods(client, playerMods.mods, 'Offense', 100);
+      const offMods = getPlayerMods(client, playerMods, 'Offense', 100);
       if (offMods.length) {
         await message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Offense Mods`, offMods));
       } else {
@@ -80,7 +85,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     await message.channel.send('🚧 Sorry, DSTB is a work in progress 🚧')
   }
 
-  if(options.length <= 0) {
+  if (options.length <= 0) {
     await message.channel.send('Check `help recruit` for more options');
   }
   await message.react("👍");
@@ -98,10 +103,10 @@ function getPlayerStats(client, data) {
     if (!data.arena.char.squad.hasOwnProperty(toon)) {
       continue;
     }
-    res['Arena team'] += data.arena.char.squad[toon].name + ', ';
-    if (data.arena.char.squad[toon].type === 'Leader') {
+    res['Arena team'] += client.nameDict[data.arena.char.squad[toon].defId] + ', ';
+    if (data.arena.char.squad[toon].type === 'UNITTYPELEADER') {
       res['Arena team'] = res['Arena team'].slice(0, -2);
-      res['Arena team'] += ` (${data.arena.char.squad[toon].type}), `;
+      res['Arena team'] += ` (Leader), `;
     }
   }
   res['Arena team'] = res['Arena team'].slice(0, -2);
@@ -112,14 +117,14 @@ function getPlayerStats(client, data) {
     if (!data.arena.ship.squad.hasOwnProperty(ship)) {
       continue;
     }
-    if (data.arena.ship.squad[ship].type === 'Capital Ship') {
-      capShip = data.arena.ship.squad[ship].name;
+    if (data.arena.ship.squad[ship].type === 'UNITTYPECOMMANDER') {
+      capShip = client.nameDict[data.arena.ship.squad[ship].defId];
     }
-    if (data.arena.ship.squad[ship].type === 'Unit') {
-      startShips.push(data.arena.ship.squad[ship].name);
+    if (data.arena.ship.squad[ship].type === 'UNITTYPEDEFAULT') {
+      startShips.push(client.nameDict[data.arena.ship.squad[ship].defId]);
     }
-    if (data.arena.ship.squad[ship].type === 'Reinforcement') {
-      reinforcements.push(data.arena.ship.squad[ship].name);
+    if (data.arena.ship.squad[ship].type === 'UNITTYPEREINFORCEMENT') {
+      reinforcements.push(client.nameDict[data.arena.ship.squad[ship].defId]);
     }
   }
   res['Arena Fleet'] = `\n*Capital Ship*: ${capShip}\n*Starting lineup*: `;
@@ -157,7 +162,7 @@ function getPlayerStats(client, data) {
     let zetas = [];
     toon.skills.forEach(skill => {
       if (skill.isZeta && skill.tier >= 8) {
-        zetas.push(`${skill.name} (${skill.type})`);
+        zetas.push(`${client.skillsDict[skill.id].name} (${client.skillsDict[skill.id].type})`);
       }
     });
 
@@ -191,27 +196,27 @@ function getPlayerMods(client, data, type, minVal) {
       continue;
     }
 
-    if (data[d].secondaryType_1 === type) {
-      if (Number(data[d].secondaryValue_1) > minVal) {
+    if (data[d].secondary_1[0] === type) {
+      if (Number(data[d].secondary_1[1]) > minVal) {
         // mods.push(modToField(data[d], type));
         mods.push(data[d]);
         continue;
       }
     }
-    if (data[d].secondaryType_2 === type) {
-      if (Number(data[d].secondaryValue_2) > minVal) {
+    if (data[d].secondary_2[0] === type) {
+      if (Number(data[d].secondary_2[1]) > minVal) {
         mods.push(data[d]);
         continue;
       }
     }
-    if (data[d].secondaryType_3 === type) {
-      if (Number(data[d].secondaryValue_3) > minVal) {
+    if (data[d].secondary_3[0] === type) {
+      if (Number(data[d].secondary_3[1]) > minVal) {
         mods.push(data[d]);
         continue;
       }
     }
-    if (data[d].secondaryType_4 === type) {
-      if (Number(data[d].secondaryValue_4) > minVal) {
+    if (data[d].secondary_4[0] === type) {
+      if (Number(data[d].secondary_4[1]) > minVal) {
         mods.push(data[d]);
         continue;
       }
@@ -225,18 +230,18 @@ function getPlayerMods(client, data, type, minVal) {
       mods.sort(modSortOffense);
       break;
   }
-  mods = mods.slice(0, 6);
   mods = mods.reverse();
+  mods = mods.slice(0, 6);
   let res = [];
   for (const m of Object.keys(mods)) {
-    res.push(modToField(mods[m], type));
+    res.push(modToField(client, mods[m], type));
   }
   return res;
 }
 
-function modToField(mod, type) {
+function modToField(client, mod, type) {
   let slot = null;
-  switch (mod.slot) {
+  switch (mod.slot.toLowerCase()) {
     case 'diamond':
       slot = '◆';
       break;
@@ -256,29 +261,29 @@ function modToField(mod, type) {
       slot = '▲';
       break;
   }
-  let value = `\`\`\`asciidoc\n= ${mod.characterName} =\n`;
-  if (mod.secondaryType_1 === type) {
-    value += `[${mod.secondaryValue_1} ${mod.secondaryType_1}]\n`;
+  let value = `\`\`\`asciidoc\n= ${client.nameDict[mod.unit]} =\n`;
+  if (mod.secondary_1[0] === type) {
+    value += `[${mod.secondary_1[0]} ${mod.secondary_1[1]}]\n`;
   } else {
-    value += `${mod.secondaryValue_1} ${mod.secondaryType_1}\n`;
+    value += `${mod.secondary_1[0]} ${mod.secondary_1[1]}\n`;
   }
-  if (mod.secondaryType_2 === type) {
-    value += `[${mod.secondaryValue_2} ${mod.secondaryType_2}]\n`;
+  if (mod.secondary_2[0] === type) {
+    value += `[${mod.secondary_2[0]} ${mod.secondary_2[1]}]\n`;
   } else {
-    value += `${mod.secondaryValue_2} ${mod.secondaryType_2}\n`;
+    value += `${mod.secondary_2[0]} ${mod.secondary_2[1]}\n`;
   }
-  if (mod.secondaryType_3 === type) {
-    value += `[${mod.secondaryValue_3} ${mod.secondaryType_3}]\n`;
+  if (mod.secondary_3[0] === type) {
+    value += `[${mod.secondary_3[0]} ${mod.secondary_3[1]}]\n`;
   } else {
-    value += `${mod.secondaryValue_3} ${mod.secondaryType_3}\n`;
+    value += `${mod.secondary_3[0]} ${mod.secondary_3[1]}\n`;
   }
-  if (mod.secondaryType_4 === type) {
-    value += `[${mod.secondaryValue_4} ${mod.secondaryType_4}]\n`;
+  if (mod.secondary_4[0] === type) {
+    value += `[${mod.secondary_4[0]} ${mod.secondary_4[1]}]\n`;
   } else {
-    value += `${mod.secondaryValue_4} ${mod.secondaryType_4}\n`;
+    value += `${mod.secondary_4[0]} ${mod.secondary_4[1]}\n`;
   }
   value += `\`\`\``;
-  return { name: `${mod.pips} dot ${mod.set} ${slot} ${mod.primaryBonusType} primary`, value: value, inline: true };
+  return { name: `${mod.pips} dot ${mod.set} ${slot} ${mod.primary[0]} primary`, value: value, inline: true };
 }
 
 function modSortSpeed(a, b) {
@@ -292,29 +297,29 @@ function modSortOffense(a, b) {
 function modSort(a, b, type) {
   let valA = 0;
   let valB = 0;
-  if (a.secondaryType_1 == type) {
-    valA = Number(a.secondaryValue_1);
+  if (a.secondary_1[0] === type) {
+    valA = Number(a.secondary_1[1]);
   }
-  if (a.secondaryType_2 == type) {
-    valA = Number(a.secondaryValue_2);
+  if (a.secondary_2[0] === type) {
+    valA = Number(a.secondary_2[1]);
   }
-  if (a.secondaryType_3 == type) {
-    valA = Number(a.secondaryValue_3);
+  if (a.secondary_3[0] === type) {
+    valA = Number(a.secondary_3[1]);
   }
-  if (a.secondaryType_4 == type) {
-    valA = Number(a.secondaryValue_4);
+  if (a.secondary_4[0] === type) {
+    valA = Number(a.secondary_4[1]);
   }
-  if (b.secondaryType_1 == type) {
-    valB = Number(b.secondaryValue_1);
+  if (b.secondary_1[0] === type) {
+    valB = Number(b.secondary_1[1]);
   }
-  if (b.secondaryType_2 == type) {
-    valB = Number(b.secondaryValue_2);
+  if (b.secondary_2[0] === type) {
+    valB = Number(b.secondary_2[1]);
   }
-  if (b.secondaryType_3 == type) {
-    valB = Number(b.secondaryValue_3);
+  if (b.secondary_3[0] === type) {
+    valB = Number(b.secondary_3[1]);
   }
-  if (b.secondaryType_4 == type) {
-    valB = Number(b.secondaryValue_4);
+  if (b.secondary_4[0] === type) {
+    valB = Number(b.secondary_4[1]);
   }
 
   return valA - valB;
