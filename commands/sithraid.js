@@ -31,16 +31,31 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   let title = 'HSTR Readiness';
   let msg = null;
   let breakdown = null;
-  const zetaData = await client.swapi.fetchData('zetas');
-  const charMedia = await client.swapi.fetchData('units');
   if (options.indexOf('p') >= 0) {
-    const player = await client.swapi.fetchPlayer(allycode);
+    const player = await client.swapi.fetchPlayer({ allycode: allycode });
     title = player.name;
-    [msg, breakdown] = analyzeGuildHstrReadiness(client, [player], zetaData, charMedia);
+    [msg, breakdown] = analyzeGuildHstrReadiness(client, [player]);
   } else {
-    const guild = await client.swapi.fetchGuild(allycode);
+    const guild = await client.swapi.fetchGuild({
+      allycode: allycode
+    });
+    if (guild.hasOwnProperty('error')) {
+      await message.channel.send(`\`\`\`js\nError: ${guild.error}.\n\`\`\``);
+      await message.react("☠");
+      return;
+    }
+
+    if (guild.hasOwnProperty('response')) {
+      await message.channel.send(`\`\`\`js\nError: Request time out requesting roster for ${allycode}\n\`\`\``);
+      await message.react("☠");
+      return;
+    }
+
+    let allyCodes = guild.roster.map(r => r.allyCode);
+    const roster = await client.swapi.fetchPlayer({ allycode: allyCodes });
+
     title = guild.name;
-    [msg, breakdown] = analyzeGuildHstrReadiness(client, guild.roster, zetaData, charMedia);
+    [msg, breakdown] = analyzeGuildHstrReadiness(client, roster);
   }
 
   const fields = [];
@@ -87,7 +102,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   await message.react("👍");
 };
 
-function createGuildDict(roster, zetaData) {
+function createGuildDict(client, roster) {
   const d = {};
   roster.forEach(player => {
     d[player.name] = {};
@@ -98,10 +113,10 @@ function createGuildDict(roster, zetaData) {
         toon.skills.forEach(skill => {
           if (skill.isZeta && skill.tier >= 8) {
             let zetaName = '';
-            if (zetaData.hasOwnProperty(skill.name)) {
-              zetaName = zetaData[skill.name].name;
+            if (client.skillsDict.hasOwnProperty(skill.id)) {
+              zetaName = client.skillsDict[skill.id].name;
             } else {
-              zetaName = skill.name;
+              zetaName = skill.id;
             }
             d[player.name]['zetas'].push(zetaName);
           }
@@ -112,8 +127,8 @@ function createGuildDict(roster, zetaData) {
   return d;
 }
 
-function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
-  let globalDict = createGuildDict(roster, zetaData);
+function analyzeGuildHstrReadiness(client, roster) {
+  let globalDict = createGuildDict(client, roster);
 
   const readiness = {};
   for (let phase in hstrTeams) {
@@ -264,12 +279,9 @@ function analyzeGuildHstrReadiness(client, roster, zetaData, char_media) {
           let team_str = [];
           for (te in temp) {
             const tem = temp[te];
-            for (cID in char_media) {
-              const c = char_media[cID];
-              if (cID == tem) {
-                team_str.push(c['name']);
-                break;
-              }
+            if (client.nameDict.hasOwnProperty(tem)) {
+              team_str.push(client.nameDict[tem]);
+              break;
             }
           }
 
