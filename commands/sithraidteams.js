@@ -81,7 +81,7 @@ function getHstrTeams(charMedia, phaseFilter) {
           continue;
         }
         const toon = team['TOONS'][t2];
-        if(charMedia.hasOwnProperty(toon)) {
+        if (charMedia.hasOwnProperty(toon)) {
           s += charMedia[toon] + ', ';
         } else {
           s += toon + ', ';
@@ -97,7 +97,7 @@ function getHstrTeams(charMedia, phaseFilter) {
         }
         s = s.slice(0, -2);
       }
-      s += `'. Goal: ${team['GOAL']}%`;
+      s += `. Goal: ${team['GOAL']}%`;
       result[phase][team['NAME']] = s;
     }
   }
