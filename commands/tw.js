@@ -104,6 +104,7 @@ async function getGuildStats(client, roster) {
   res['Number of zzTrayas'] = 0;
   res['Number of G11+ Trayas'] = 0;
   res['Number of G11+ Magmatroopers'] = 0;
+  res['Number of G11+ Enfys Nest'] = 0;
   res['Number of zBastilla'] = 0;
   res['Number of G11'] = 0;
   res['Number of G12'] = 0;
@@ -155,6 +156,9 @@ async function getGuildStats(client, roster) {
           if (tempZetas >= 1) {
             res['Number of zBastilla']++;
           }
+          break;
+          case 'ENFYSNEST':
+            res['Number of G11+ Enfys Nest']++;
           break;
       }
     }
