@@ -1,6 +1,7 @@
 // Returns the list of HSTR teams
 const hstrTeams = require("../data/hstrTeams.json");
 const MAX_HSTR_TEAMS_PER_EMBED = 28;
+const ALL_PHASES = ['PHASE1', 'PHASE2', 'PHASE3', 'PHASE4_WITH_DN'];
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   await message.react("🖐");
@@ -9,11 +10,14 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     options = args[args.length - 1];
     options = options.replace(new RegExp('-', 'g'), '');
     options = Array.from(options);
-    if (options.indexOf('p') < 0 && options.indexOf('c')) {
-      await message.channel.send(`\`\`\`js\nError: Unrecognized option: ${options}.\n\`\`\``);
-      await message.react("☠");
-      return;
+    if (options.indexOf('p') < 0 && options.indexOf('c') < 0) {
+      options.push('p');
     }
+    // if (options.indexOf('p') < 0 && options.indexOf('c') < 0 && options.indexOf('1') < 0 && options.indexOf('2') < 0 && options.indexOf('3') < 0 && options.indexOf('4') < 0 ) {
+    //   await message.channel.send(`\`\`\`js\nError: Unrecognized option: ${options}.\n\`\`\``);
+    //   await message.react("☠");
+    //   return;
+    // }
   }
 
   let dm = await message.channel;
@@ -21,9 +25,22 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     dm = await message.author;
   }
 
-  const charMedia = await client.swapi.fetchData('units');
-  const msg = getHstrTeams(charMedia);
+  let phases = [];
+  for(const o of options) {
+    if (Number(o) && Number(o) >= 1 && Number(o) <= 4) {
+      phases.push(ALL_PHASES[Number(o) - 1]);
+    }
+  }
+  if(!phases.length) {
+    phases = ALL_PHASES;
+  }
+  
+  const msg = getHstrTeams(client.nameDict);
+  console.log(JSON.stringify(msg));
   Object.keys(msg).sort().forEach(function (phase, i) {
+    if (phases.indexOf(phase) < 0) {
+      return;
+    }
     const teams = Object.keys(msg[phase]).sort();
     if (teams.length < MAX_HSTR_TEAMS_PER_EMBED) {
       const fields = [];
@@ -32,6 +49,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           continue;
         }        
         const team = teams[t];
+        console.log(JSON.stringify(teams));
         fields.push({ name: team, value: msg[phase][teams[t]] });
       }
       dm.send(client.createEmbed(`HSTR ${phase} Assignments`, fields));
@@ -57,22 +75,27 @@ function getHstrTeams(charMedia) {
   for (const phase of Object.keys(hstrTeams)) {
     const teams = hstrTeams[phase];
     result[phase] = {};
+    console.log(`teams: ${JSON.stringify(teams)}`);
     for (const t1 of Object.keys(teams)) {
       const team = teams[t1];
       let s = '';
+      console.log(`team: ${JSON.stringify(team)}`);
       for (const t2 in team['TOONS']) {
+        if(!team['TOONS'].hasOwnProperty(t2)) {
+          continue;
+        }
         const toon = team['TOONS'][t2];
-        for (c in charMedia) {
-          if (c === toon) {
-            s += charMedia[c].name + ', ';
-            break;
-          }
+        console.log(`toon: ${JSON.stringify(toon)}`);
+        if(charMedia.hasOwnProperty(toon)) {
+          s += charMedia[toon] + ', ';
+        } else {
+          s += toon + ', ';
         }
       }
       s = s.slice(0, -2);
       if (team['ZETAS']) {
         s += '. Mandatory zetas: ';
-        for (z in team['ZETAS']) {
+        for (const z in team['ZETAS']) {
           if (team['ZETAS'].hasOwnProperty(z)) {
             s += team['ZETAS'][z] + ', ';
           }
@@ -98,5 +121,5 @@ exports.help = {
   name: "sithraidteams",
   category: "Raid",
   description: "List of HSTR teams.",
-  usage: "sithraid (Options: [ p | c ])\nExample: ,srt c\np: private (sent via DM)\nc: channel (display in current channel)"
+  usage: "sithraidteams (Options: [ p | c | 1 | 2 | 3 | 4 ])\nExamples: srt c\nsrt p134\np: private (sent via DM)\nc: channel (display in current channel)\n1, 2, 3, 4: show teams for each phase"
 };
