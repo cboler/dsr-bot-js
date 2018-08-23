@@ -35,12 +35,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     phases = ALL_PHASES;
   }
   
-  const msg = getHstrTeams(client.nameDict);
-  console.log(JSON.stringify(msg));
+  const msg = getHstrTeams(client.nameDict, phases);
   Object.keys(msg).sort().forEach(function (phase, i) {
-    if (phases.indexOf(phase) < 0) {
-      return;
-    }
     const teams = Object.keys(msg[phase]).sort();
     if (teams.length < MAX_HSTR_TEAMS_PER_EMBED) {
       const fields = [];
@@ -49,7 +45,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           continue;
         }        
         const team = teams[t];
-        console.log(JSON.stringify(teams));
         fields.push({ name: team, value: msg[phase][teams[t]] });
       }
       dm.send(client.createEmbed(`HSTR ${phase} Assignments`, fields));
@@ -70,22 +65,22 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   await message.react("👍");
 };
 
-function getHstrTeams(charMedia) {
+function getHstrTeams(charMedia, phaseFilter) {
   const result = {};
   for (const phase of Object.keys(hstrTeams)) {
+    if (phaseFilter.indexOf(phase) < 0) {
+      continue;
+    }
     const teams = hstrTeams[phase];
     result[phase] = {};
-    console.log(`teams: ${JSON.stringify(teams)}`);
     for (const t1 of Object.keys(teams)) {
       const team = teams[t1];
       let s = '';
-      console.log(`team: ${JSON.stringify(team)}`);
       for (const t2 in team['TOONS']) {
         if(!team['TOONS'].hasOwnProperty(t2)) {
           continue;
         }
         const toon = team['TOONS'][t2];
-        console.log(`toon: ${JSON.stringify(toon)}`);
         if(charMedia.hasOwnProperty(toon)) {
           s += charMedia[toon] + ', ';
         } else {
