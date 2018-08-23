@@ -9,54 +9,58 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     await message.react("☠");
     return;
   }
-  const allycode = args[0].replace(/-/g, '');
-  if (!client.isAllyCode(allycode)) {
-    await message.channel.send(`\`\`\`js\nError: ${args[0]} is not an ally code.\n\`\`\``);
+  
+  const allycodes = [];
+  let a = 0;
+  while(args[a] && client.isAllyCode(args[a].replace(/-/g, ''))) {
+    allycodes.push(args[a].replace(/-/g, ''));
+    a++;
+  }
+  
+  if (!allycodes.length) {
+    await message.channel.send(`\`\`\`js\nError: sithraid needs an ally code.\n\`\`\``);
     await message.react("☠");
     return;
   }
-
+  
   let options = 'g';
-  if (args.length > 1) {
-    options = args[args.length - 1];
+  if (a < args.length) {
+    options = args[a];
     options = options.replace(new RegExp('-', 'g'), '');
     options = Array.from(options);
-    if (options.indexOf('g') < 0 && options.indexOf('p') < 0 && options.indexOf('d') < 0) {
+    if (options.indexOf('g') < 0 && options.indexOf('p') < 0 && options.indexOf('d') < 0 && options.indexOf('n') < 0) {
       await message.channel.send(`\`\`\`js\nError: Unrecognized option: ${options}.\n\`\`\``);
       await message.react("☠");
       return;
     }
+    
+    if (allycodes.length > 1 && options.indexOf('p') >= 0) {
+      options.replace('p', 'g');
+    } else if (options.indexOf('p') < 0 && options.indexOf('g') < 0) {
+      options.push('g');
+    }
   }
 
+  const noCap = options.indexOf('n') >= 0;
+  
   let title = 'HSTR Readiness';
   let msg = null;
   let breakdown = null;
-  if (options.indexOf('p') >= 0) {
-    const player = await client.swapi.fetchPlayer({ allycode: allycode });
-    title = player.name;
-    [msg, breakdown] = analyzeGuildHstrReadiness(client, [player]);
-  } else {
+  let roster = null;
+  if ( options.indexOf('g') >= 0 && allycodes.length == 1) {
     const guild = await client.swapi.fetchGuild({
-      allycode: allycode
+      allycode: allycodes
     });
-    if (guild.hasOwnProperty('error')) {
-      await message.channel.send(`\`\`\`js\nError: ${guild.error}.\n\`\`\``);
-      await message.react("☠");
-      return;
+    let guildAllyCodes = guild.roster.map(r => r.allyCode);
+    roster = await client.swapi.fetchPlayer({ allycode: guildAllyCodes });
+  } else {
+    roster = await client.swapi.fetchPlayer({ allycode: allycodes });
+    if (!Array.isArray(roster)) {
+      title = roster.name;
+      roster = [roster];
     }
-
-    if (guild.hasOwnProperty('response')) {
-      await message.channel.send(`\`\`\`js\nError: Request time out requesting roster for ${allycode}\n\`\`\``);
-      await message.react("☠");
-      return;
-    }
-
-    let allyCodes = guild.roster.map(r => r.allyCode);
-    const roster = await client.swapi.fetchPlayer({ allycode: allyCodes });
-
-    title = guild.name;
-    [msg, breakdown] = analyzeGuildHstrReadiness(client, roster);
   }
+  [msg, breakdown] = analyzeGuildHstrReadiness(client, roster, noCap);
 
   const fields = [];
   for (const m in msg) {
@@ -91,7 +95,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           for (let i = 0; i < nb + 1; i++) {
             const fieldsBD = [];
             for (const teamName in teams.slice((i - 1) * MAX_HSTR_TEAMS_PER_EMBED, i * i * MAX_HSTR_TEAMS_PER_EMBED < teams.length ? MAX_HSTR_TEAMS_PER_EMBED : teams.length)) {
-              fieldsBD.push({ name: `${team} - ${breakdown[v][team]['comp']} (Goal: ${breakdown[v][team]['goal']}%) - eligibility: ${breakdown[v][team]['eligibility']}`, value: breakdown[v][team]['players'].join(", ") });
+              fieldsBD.push({ name: `${teamName} - ${breakdown[v][teamName]['comp']} (Goal: ${breakdown[v][teamName]['goal']}%) - eligibility: ${breakdown[v][teamName]['eligibility']}`, value: breakdown[v][teamName]['players'].join(", ") });
             }
             dm.send(client.createEmbed(`${title}'s HSTR ${v} Assignments (${i}/${nb})`, fieldsBD));
           }
@@ -127,7 +131,7 @@ function createGuildDict(client, roster) {
   return d;
 }
 
-function analyzeGuildHstrReadiness(client, roster) {
+function analyzeGuildHstrReadiness(client, roster, noCap) {
   let globalDict = createGuildDict(client, roster);
 
   const readiness = {};
@@ -219,10 +223,12 @@ function analyzeGuildHstrReadiness(client, roster) {
             const toonID = winner['IDS'][id];
             delete globalDict[player][toonID];
           }
-          if (readiness[phase]['remaining'] <= 0) {
-            readiness[phase]['remaining'] = 0;
-            phaseReady = true;
-            break;
+          if(!noCap) {
+            if (readiness[phase]['remaining'] <= 0) {
+              readiness[phase]['remaining'] = 0;
+              phaseReady = true;
+              break;
+            }
           }
         } else {
           teamsLeft = false;
@@ -236,7 +242,7 @@ function analyzeGuildHstrReadiness(client, roster) {
     sorted[sorted.length] = key;
   }
   sorted.sort();
-  for (k in sorted) {
+  for (const k in sorted) {
     if (!readiness.hasOwnProperty(sorted[k])) {
       continue;
     }
@@ -277,7 +283,7 @@ function analyzeGuildHstrReadiness(client, roster) {
         if (t['NAME'] == team['team_name']) {
           const temp = t['TOONS'];
           let team_str = [];
-          for (te in temp) {
+          for (const te in temp) {
             const tem = temp[te];
             if (client.nameDict.hasOwnProperty(tem)) {
               team_str.push(client.nameDict[tem]);
@@ -303,13 +309,13 @@ function create_breakdown(readiness) {
     sorted[sorted.length] = key;
   }
   sorted.sort();
-  for (k in sorted) {
+  for (const k in sorted) {
     if (!readiness.hasOwnProperty(sorted[k])) {
       continue;
     }
     let v = sorted[k];
     breakdown[v] = {};
-    for (t in readiness[v]['teams']) {
+    for (const t in readiness[v]['teams']) {
       if (!readiness[v]['teams'].hasOwnProperty(t)) {
         continue;
       }
@@ -336,6 +342,6 @@ exports.conf = {
 exports.help = {
   name: "sithraid",
   category: "Raid",
-  description: "Check for a guild or player's readiness to the HSTR.",
-  usage: "sithraid <allycode> (Options: [ g | p | d | c ])\nExample: \nsithraid 123456789 gdc\nsithraid 123456789 p\ng: guild (default)\np: player\nd: details\nc: channel (display details in current channel)"
+  description: "Check for a guild or players' readiness to the HSTR.",
+  usage: "sithraid <allycodes> (Options: [ g | p | d | c | n ])\nExample: \nsithraid 123456789 gdc\nsithraid 123456789 p\n sithraid 123456789 012345678 dc\ng: guild (default)\np: player\nd: details\nc: channel (display details in current channel)\nn: no cap (don't cap each phase to 100%)"
 };
