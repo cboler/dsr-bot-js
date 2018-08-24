@@ -1,8 +1,7 @@
-var fs = require('fs');
-var MongoClient = require('mongodb').MongoClient;
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
 
 // this directory stores all the rotations
-var rotationDir = './rotations';
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   await message.react("🖐");
 
@@ -13,16 +12,28 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 
   // Connect to the db
-  const mc = await MongoClient.connect(client.config.mongoUrl, { useNewUrlParser: true });
+  MongoClient.connect(client.config.mongoUrl, { useNewUrlParser: true }, function(err, client) {
+    assert.equal(null, err);
+    console.log("Connected successfully to server");
+   
+    const db = client.db('swgoh');
+    
+    const row = {
+      channelId: message.channel.id,
+      rotation: args,
+      active: true,
+      direction: 'left'
+    };
+    
+    const collection = db.collection('rotations');
+    collection.insertOne(row, function(err, result) {
+      assert.equal(err, null);
+    });
+    
+    client.close();
+  });
+
   await message.channel.send(JSON.stringify(args));
-
-  // check if the rotation directory exists. If it doesn't create it.
-  if (!fs.existsSync(rotationDir)) {
-    fs.mkdirSync(rotationDir);
-  }
-  for (const a of args) {
-
-  }
 
   await message.react("👍");
 };
