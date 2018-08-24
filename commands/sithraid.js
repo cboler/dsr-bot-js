@@ -9,20 +9,20 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     await message.react("☠");
     return;
   }
-  
+
   const allycodes = [];
   let a = 0;
-  while(args[a] && client.isAllyCode(args[a].replace(/-/g, ''))) {
+  while (args[a] && client.isAllyCode(args[a].replace(/-/g, ''))) {
     allycodes.push(args[a].replace(/-/g, ''));
     a++;
   }
-  
+
   if (!allycodes.length) {
     await message.channel.send(`\`\`\`js\nError: sithraid needs an ally code.\n\`\`\``);
     await message.react("☠");
     return;
   }
-  
+
   let options = 'g';
   if (a < args.length) {
     options = args[a];
@@ -33,7 +33,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       await message.react("☠");
       return;
     }
-    
+
     if (allycodes.length > 1 && options.indexOf('p') >= 0) {
       options.replace('p', 'g');
     } else if (options.indexOf('p') < 0 && options.indexOf('g') < 0) {
@@ -42,12 +42,12 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 
   const noCap = options.indexOf('n') >= 0;
-  
+
   let title = 'HSTR Readiness';
   let msg = null;
   let breakdown = null;
   let roster = null;
-  if ( options.indexOf('g') >= 0 && allycodes.length == 1) {
+  if (options.indexOf('g') >= 0 && allycodes.length == 1) {
     const guild = await client.swapi.fetchGuild({
       allycode: allycodes
     });
@@ -223,7 +223,7 @@ function analyzeGuildHstrReadiness(client, roster, noCap) {
             const toonID = winner['IDS'][id];
             delete globalDict[player][toonID];
           }
-          if(!noCap) {
+          if (!noCap) {
             if (readiness[phase]['remaining'] <= 0) {
               readiness[phase]['remaining'] = 0;
               phaseReady = true;

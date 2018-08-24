@@ -26,24 +26,24 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 
   let phases = [];
-  for(const o of options) {
+  for (const o of options) {
     if (Number(o) && Number(o) >= 1 && Number(o) <= 4) {
       phases.push(ALL_PHASES[Number(o) - 1]);
     }
   }
-  if(!phases.length) {
+  if (!phases.length) {
     phases = ALL_PHASES;
   }
-  
+
   const msg = getHstrTeams(client.nameDict, phases);
   Object.keys(msg).sort().forEach(function (phase, i) {
     const teams = Object.keys(msg[phase]).sort();
     if (teams.length < MAX_HSTR_TEAMS_PER_EMBED) {
       const fields = [];
       for (const t in teams) {
-        if(!teams.hasOwnProperty(t)) {
+        if (!teams.hasOwnProperty(t)) {
           continue;
-        }        
+        }
         const team = teams[t];
         fields.push({ name: team, value: msg[phase][teams[t]] });
       }
@@ -53,7 +53,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       for (let i = 1; i < nb + 1; i++) {
         const fields = [];
         for (const teamidx in teams.slice((i - 1) * MAX_HSTR_TEAMS_PER_EMBED, i * i * MAX_HSTR_TEAMS_PER_EMBED < teams.length ? MAX_HSTR_TEAMS_PER_EMBED : teams.length)) {
-          if(!teams.hasOwnProperty(teamidx)) {
+          if (!teams.hasOwnProperty(teamidx)) {
             continue;
           }
           fields.push({ name: teams[teamidx], value: msg[phase][teams[teamidx]] });
@@ -77,7 +77,7 @@ function getHstrTeams(charMedia, phaseFilter) {
       const team = teams[t1];
       let s = '';
       for (const t2 in team['TOONS']) {
-        if(!team['TOONS'].hasOwnProperty(t2)) {
+        if (!team['TOONS'].hasOwnProperty(t2)) {
           continue;
         }
         const toon = team['TOONS'][t2];
