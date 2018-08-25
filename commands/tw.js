@@ -158,7 +158,9 @@ async function getGuildStats(client, roster) {
           }
           break;
           case 'ENFYSNEST':
-            res['Number of G11+ Enfys Nest']++;
+            if (isG11 || isG12) {
+              res['Number of G11+ Enfys Nest']++;
+            }
           break;
       }
     }
