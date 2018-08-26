@@ -32,6 +32,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
   let allyCodes = guild.roster.map(r => r.allyCode);
   const roster = await client.swapi.fetchPlayer({ allycode: allyCodes });
+  // // get unit's list from: /swgoh/units
+  // let units = await client.swapi.fetchUnits({ allycode: allyCodes });
+  // // pass whole units object to crinolo's api
+  // let rosterStats = await client.swapi.rosterStats(units);
 
   const stats = await getStats(client, roster);
 
@@ -49,18 +53,21 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
   var buffer = await wb.writeToBuffer();
   await message.channel.send('File:', {
-    files: [{attachment: buffer,
-    name: `${guild.name}.xlsx`}]
+    files: [{
+      attachment: buffer,
+      name: `${guild.name}.xlsx`
+    }]
   });
   await message.react("👍");
 };
 
 async function getStats(client, roster) {
   const data = [];
-  data.push(['Name', 'Total GP', 'Character GP', 'Fleet GP', 'Arena', 'Fleet Arena', 'G11', 'G12', 'Zetas', 'Mods +10 speed']);
+  data.push(['Name', 'Total GP', 'Character GP', 'Fleet GP', 'Arena', 'Fleet Arena', 'G11', 'G12', 'Zetas', 'Mods +10 speed', 'Mods +15 speed', 'Nest Speed']);
 
   for (const r of Object.keys(roster)) {
     const element = roster[r];
+    const stats = await client.swapi.rosterStats(element.roster);
     let d = [];
     d.push(element.name);
     d.push(element.gpFull);
@@ -72,6 +79,7 @@ async function getStats(client, roster) {
     let g12 = 0;
     let zetas = 0;
     let mod10 = 0;
+    let mod15 = 0;
     for (const t of Object.keys(element.roster)) {
       const toon = element.roster[t];
       let tempZetas = 0;
@@ -91,22 +99,50 @@ async function getStats(client, roster) {
 
       for (const m of Object.keys(toon.mods)) {
         const mod = toon.mods[m];
-        if (mod.secondaryType_1 === 'UNITSTATSPEED' && mod.secondaryValue_1 > 1000000000) {
-          mod10++;
-          continue;
+        if (mod.secondaryType_1 === 'UNITSTATSPEED') {
+          if (mod.secondaryValue_1 >= 1000000000) {
+            mod10++;
+            continue;
+          }
+          if (mod.secondaryValue_1 >= 1500000000) {
+            mod15++;
+            continue;
+          }
         }
-        if (mod.secondaryType_2 === 'UNITSTATSPEED' && mod.secondaryValue_2 > 1000000000) {
-          mod10++;
-          continue;
+        if (mod.secondaryType_2 === 'UNITSTATSPEED') {
+          if (mod.secondaryValue_2 >= 1000000000) {
+            mod10++;
+            continue;
+          }
+          if (mod.secondaryValue_2 >= 1500000000) {
+            mod15++;
+            continue;
+          }
         }
-        if (mod.secondaryType_3 === 'UNITSTATSPEED' && mod.secondaryValue_3 > 1000000000) {
-          mod10++;
-          continue;
+        if (mod.secondaryType_3 === 'UNITSTATSPEED') {
+          if (mod.secondaryValue_3 >= 1000000000) {
+            mod10++;
+            continue;
+          }
+          if (mod.secondaryValue_3 >= 1500000000) {
+            mod15++;
+            continue;
+          }
         }
-        if (mod.secondaryType_4 === 'UNITSTATSPEED' && mod.secondaryValue_4 > 1000000000) {
-          mod10++;
-          continue;
+        if (mod.secondaryType_4 === 'UNITSTATSPEED') {
+          if (mod.secondaryValue_4 >= 1000000000) {
+            mod10++;
+            continue;
+          }
+          if (mod.secondaryValue_4 >= 1500000000) {
+            mod15++;
+            continue;
+          }
         }
+      }
+
+      if (toon.defId === 'ENFYSNEST') {
+
       }
     }
     d.push(g11);
