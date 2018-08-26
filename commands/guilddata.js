@@ -149,6 +149,7 @@ async function getStats(client, roster) {
     d.push(g12);
     d.push(zetas);
     d.push(mod10);
+    d.push(mod15);
     data.push(d);
   }
   return data;
