@@ -102,8 +102,8 @@ async function getStats(client, roster) {
         if (mod.secondaryType_1 === 'UNITSTATSPEED') {
           if (mod.secondaryValue_1 >= 1000000000) {
             mod10++;
-            continue;
-          } else if (mod.secondaryValue_1 >= 1500000000) {
+          }
+          if (mod.secondaryValue_1 >= 1500000000) {
             mod15++;
             continue;
           }
@@ -111,8 +111,8 @@ async function getStats(client, roster) {
         if (mod.secondaryType_2 === 'UNITSTATSPEED') {
           if (mod.secondaryValue_2 >= 1000000000) {
             mod10++;
-            continue;
-          } else if (mod.secondaryValue_2 >= 1500000000) {
+          }
+          if (mod.secondaryValue_2 >= 1500000000) {
             mod15++;
             continue;
           }
@@ -120,8 +120,8 @@ async function getStats(client, roster) {
         if (mod.secondaryType_3 === 'UNITSTATSPEED') {
           if (mod.secondaryValue_3 >= 1000000000) {
             mod10++;
-            continue;
-          } else if (mod.secondaryValue_3 >= 1500000000) {
+          }
+          if (mod.secondaryValue_3 >= 1500000000) {
             mod15++;
             continue;
           }
@@ -129,8 +129,8 @@ async function getStats(client, roster) {
         if (mod.secondaryType_4 === 'UNITSTATSPEED') {
           if (mod.secondaryValue_4 >= 1000000000) {
             mod10++;
-            continue;
-          } else if (mod.secondaryValue_4 >= 1500000000) {
+          }
+          if (mod.secondaryValue_4 >= 1500000000) {
             mod15++;
             continue;
           }
