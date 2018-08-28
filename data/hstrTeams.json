@@ -95,6 +95,83 @@
             ]
         }
     ],
+    "PHASE4_WITH_DN": [
+        {
+            "NAME": "Nightsisters with MT and Zombie 1",
+            "TOONS": [
+                "ASAJVENTRESS",
+                "DAKA",
+                "TALIA",
+                "NIGHTSISTERZOMBIE",
+                "MOTHERTALZIN"
+            ],
+            "GOAL": 15,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Nightsister Swiftness"
+            ]
+        },
+        {
+            "NAME": "Nightsisters with MT and Zombie 2",
+            "TOONS": [
+                "ASAJVENTRESS",
+                "DAKA",
+                "NIGHTSISTERACOLYTE",
+                "NIGHTSISTERZOMBIE",
+                "MOTHERTALZIN"
+            ],
+            "GOAL": 15,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Nightsister Swiftness"
+            ]
+        },
+        {
+            "NAME": "Nightsisters with MT",
+            "TOONS": [
+                "ASAJVENTRESS",
+                "DAKA",
+                "TALIA",
+                "NIGHTSISTERACOLYTE",
+                "MOTHERTALZIN"
+            ],
+            "GOAL": 10,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Nightsister Swiftness"
+            ]
+        },
+        {
+            "NAME": "Nightsisters with Zombie",
+            "TOONS": [
+                "ASAJVENTRESS",
+                "DAKA",
+                "TALIA",
+                "NIGHTSISTERACOLYTE",
+                "NIGHTSISTERZOMBIE"
+            ],
+            "GOAL": 10,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Nightsister Swiftness"
+            ]
+        },
+        {
+            "NAME": "Nightsisters",
+            "TOONS": [
+                "ASAJVENTRESS",
+                "DAKA",
+                "TALIA",
+                "NIGHTSISTERACOLYTE",
+                "NIGHTSISTERINITIATE"
+            ],
+            "GOAL": 5,
+            "MIN_GP": 80000,
+            "ZETAS": [
+                "Nightsister Swiftness"
+            ]
+        }
+    ],
     "PHASE3": [
         {
             "NAME": "Chex Mix with Pao and Chirrut",
@@ -151,6 +228,30 @@
                 "CHIRRUTIMWE"
             ],
             "GOAL": 8,
+            "MIN_GP": 85000
+        },
+        {
+            "NAME": "Deathstorm w/ Spirit",
+            "TOONS": [
+                "MOTHERTALZIN",
+                "ASAJVENTRESS",
+                "DAKA",
+                "NIGHTSISTERZOMBIE",
+                "NIGHTSISTERSPIRIT"
+            ],
+            "GOAL": 9,
+            "MIN_GP": 85000
+        },
+        {
+            "NAME": "Deathstorm w/ Initiate",
+            "TOONS": [
+                "MOTHERTALZIN",
+                "ASAJVENTRESS",
+                "DAKA",
+                "NIGHTSISTERZOMBIE",
+                "NIGHTSISTERINITIATE"
+            ],
+            "GOAL": 9,
             "MIN_GP": 85000
         }
     ],
@@ -750,83 +851,6 @@
             "ZETAS": [
                 "Battle Meditation",
                 "Initiative"
-            ]
-        }
-    ],
-    "PHASE4_WITH_DN": [
-        {
-            "NAME": "Nightsisters with MT and Zombie 1",
-            "TOONS": [
-                "ASAJVENTRESS",
-                "DAKA",
-                "TALIA",
-                "NIGHTSISTERZOMBIE",
-                "MOTHERTALZIN"
-            ],
-            "GOAL": 15,
-            "MIN_GP": 80000,
-            "ZETAS": [
-                "Nightsister Swiftness"
-            ]
-        },
-        {
-            "NAME": "Nightsisters with MT and Zombie 2",
-            "TOONS": [
-                "ASAJVENTRESS",
-                "DAKA",
-                "NIGHTSISTERACOLYTE",
-                "NIGHTSISTERZOMBIE",
-                "MOTHERTALZIN"
-            ],
-            "GOAL": 15,
-            "MIN_GP": 80000,
-            "ZETAS": [
-                "Nightsister Swiftness"
-            ]
-        },
-        {
-            "NAME": "Nightsisters with MT",
-            "TOONS": [
-                "ASAJVENTRESS",
-                "DAKA",
-                "TALIA",
-                "NIGHTSISTERACOLYTE",
-                "MOTHERTALZIN"
-            ],
-            "GOAL": 10,
-            "MIN_GP": 80000,
-            "ZETAS": [
-                "Nightsister Swiftness"
-            ]
-        },
-        {
-            "NAME": "Nightsisters with Zombie",
-            "TOONS": [
-                "ASAJVENTRESS",
-                "DAKA",
-                "TALIA",
-                "NIGHTSISTERACOLYTE",
-                "NIGHTSISTERZOMBIE"
-            ],
-            "GOAL": 10,
-            "MIN_GP": 80000,
-            "ZETAS": [
-                "Nightsister Swiftness"
-            ]
-        },
-        {
-            "NAME": "Nightsisters",
-            "TOONS": [
-                "ASAJVENTRESS",
-                "DAKA",
-                "TALIA",
-                "NIGHTSISTERACOLYTE",
-                "NIGHTSISTERINITIATE"
-            ],
-            "GOAL": 5,
-            "MIN_GP": 80000,
-            "ZETAS": [
-                "Nightsister Swiftness"
             ]
         }
     ]
