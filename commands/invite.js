@@ -5,7 +5,7 @@ exports.run = async (client, message, args, level) => {
     .setColor(0xeda321)
     .setDescription("https://discordapp.com/oauth2/authorize?client_id=436693905736466432&scope=bot")
     .setImage("https://cdn.discordapp.com/attachments/481121267404111882/486633840127901736/DSR_gold2_64.png");
-  message.channel.send({embed});
+  await message.channel.send({embed});
 };
 
 exports.conf = {
