@@ -111,7 +111,7 @@ async function getGuildStats(client, roster) {
   res['Number of Zetas'] = 0;
   for (const r of Object.keys(roster)) {
     const element = roster[r];
-    res['Total GP'] += element.gpFull;
+    res['Total GP'] += element.stats.filter(o => o.nameKey == 'STAT_GALACTIC_POWER_ACQUIRED_NAME')[0].value;
     res['Average Arena Rank'] += element.arena.char.rank;
     res['Average Fleet Arena Rank'] += element.arena.ship.rank;
 

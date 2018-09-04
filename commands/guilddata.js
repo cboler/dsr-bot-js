@@ -1,4 +1,5 @@
 const xl = require('excel4node');
+const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
   await message.react("🖐");
@@ -31,7 +32,22 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 
   let allyCodes = guild.roster.map(r => r.allyCode);
-  const roster = await client.swapi.fetchPlayer({ allycode: allyCodes });
+  const roster = await client.swapi.fetchPlayer({ 
+    allycodes: allyCodes,
+    enums: true,
+    project: {
+      name: 1,
+      stats: 1,
+      roster: 1,
+      arena: 1
+    }
+  });
+  
+  if(roster.hasOwnProperty('response')) {
+    await message.channel.send(`\`\`\`js\nError: Request time out\n\`\`\``);
+    await message.react("☠");
+    return;
+  }
   // // get unit's list from: /swgoh/units
   // let units = await client.swapi.fetchUnits({ allycode: allyCodes });
   // // pass whole units object to crinolo's api
@@ -62,17 +78,21 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 };
 
 async function getStats(client, roster) {
-  const data = [];
-  data.push(['Name', 'Total GP', 'Character GP', 'Fleet GP', 'Arena', 'Fleet Arena', 'G11', 'G12', 'Zetas', 'Mods +10 speed', 'Mods +15 speed', 'Nest Speed']);
 
+  const data = [];
+  data.push(['Name', 'Total GP', 'Character GP', 'Fleet GP', 'Arena', 'Fleet Arena', 'G11', 'G12', 'Zetas', 'Mods +10 speed', 'Mods +15 speed']);
+  data[0].push(...['Qi\'ra', 'L3-37', 'Vandor Chewie', 'Big Z', 'Enfys Nest', 'Scoundrels GP']);
+  data[0].push(...['Bossk', 'Boba Fett', 'IG88', 'Dengar', 'Greedo', 'BH GP']);
+  data[0].push(...['KRU', 'Kylo', 'fost', 'foe', 'foo', 'FO GP']);
+  data[0].push(...['Traya', 'Sion', 'DN', 'SithT', 'Dooku', 'Sith GP']);
   for (const r of Object.keys(roster)) {
     const element = roster[r];
     const stats = await client.swapi.rosterStats(element.roster);
     let d = [];
     d.push(element.name);
-    d.push(element.gpFull);
-    d.push(element.gpChar);
-    d.push(element.gpShip);
+    d.push(element.stats.filter(o => o.nameKey == 'STAT_GALACTIC_POWER_ACQUIRED_NAME')[0].value);
+    d.push(element.stats.filter(o => o.nameKey == 'STAT_CHARACTER_GALACTIC_POWER_ACQUIRED_NAME')[0].value);
+    d.push(element.stats.filter(o => o.nameKey == 'STAT_SHIP_GALACTIC_POWER_ACQUIRED_NAME')[0].value);
     d.push(element.arena.char.rank);
     d.push(element.arena.ship.rank);
     let g11 = 0;
@@ -80,6 +100,11 @@ async function getStats(client, roster) {
     let zetas = 0;
     let mod10 = 0;
     let mod15 = 0;
+    let scoundrels = Array(6).fill(0);
+    let bh = Array(6).fill(0);
+    let fo = Array(6).fill(0);
+    let sith = Array(6).fill(0);
+    
     for (const t of Object.keys(element.roster)) {
       const toon = element.roster[t];
       let tempZetas = 0;
@@ -137,15 +162,67 @@ async function getStats(client, roster) {
         }
       }
 
-      if (toon.defId === 'ENFYSNEST') {
-
+      if(toon.defId === 'QIRA') {
+        scoundrels[0] = toon.gp;
+      } else if(toon.defId === 'L3_37') {
+        scoundrels[1] = toon.gp;
+      } else if (toon.defId === 'YOUNGCHEWBACCA') {
+        scoundrels[2] = toon.gp;
+      } else if (toon.defId === 'ZAALBAR') {
+        scoundrels[3] = toon.gp;
+      } else if (toon.defId === 'ENFYSNEST') {
+        scoundrels[4] = toon.gp;
       }
+
+      if(toon.defId === 'BOSSK') {
+        bh[0] = toon.gp;
+      } else if(toon.defId === 'DENGAR') {
+        bh[1] = toon.gp;
+      } else if (toon.defId === 'IG88') {
+        bh[2] = toon.gp;
+      } else if (toon.defId === 'GREEDO') {
+        bh[3] = toon.gp;
+      } else if (toon.defId === 'BOBAFETT') {
+        bh[4] = toon.gp;
+      }
+      
+      if(toon.defId === 'KYLORENUNMASKED') {
+        fo[0] = toon.gp;
+      } else if(toon.defId === 'KYLOREN') {
+        fo[1] = toon.gp;
+      } else if (toon.defId === 'FIRSTORDERTROOPER') {
+        fo[2] = toon.gp;
+      } else if (toon.defId === 'FIRSTORDEREXECUTIONER') {
+        fo[3] = toon.gp;
+      } else if (toon.defId === 'FIRSTORDEROFFICERMALE') {
+        fo[4] = toon.gp;
+      }
+      
+      if(toon.defId === 'DARTHTRAYA') {
+        sith[0] = toon.gp;
+      } else if(toon.defId === 'DARTHSION') {
+        sith[1] = toon.gp;
+      } else if (toon.defId === 'DARTHNIHILUS') {
+        sith[2] = toon.gp;
+      } else if (toon.defId === 'SITHTROOPER') {
+        sith[3] = toon.gp;
+      } else if (toon.defId === 'COUNTDOOKU') {
+        sith[4] = toon.gp;
+      }      
     }
     d.push(g11);
     d.push(g12);
     d.push(zetas);
     d.push(mod10);
     d.push(mod15);
+    scoundrels[5] = scoundrels.slice(0, 4).reduce(reducer);
+    bh[5] = bh.slice(0, 4).reduce(reducer);
+    fo[5] = fo.slice(0, 4).reduce(reducer);
+    sith[5] = sith.slice(0, 4).reduce(reducer);
+    d.push(...scoundrels);
+    d.push(...bh);
+    d.push(...fo);
+    d.push(...sith);
     data.push(d);
   }
   return data;
