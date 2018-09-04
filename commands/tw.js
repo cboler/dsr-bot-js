@@ -109,11 +109,16 @@ async function getGuildStats(client, roster) {
   res['Number of G11'] = 0;
   res['Number of G12'] = 0;
   res['Number of Zetas'] = 0;
+  let fleetCount = 0;
   for (const r of Object.keys(roster)) {
     const element = roster[r];
     res['Total GP'] += element.stats.filter(o => o.nameKey == 'STAT_GALACTIC_POWER_ACQUIRED_NAME')[0].value;
     res['Average Arena Rank'] += element.arena.char.rank;
-    res['Average Fleet Arena Rank'] += element.arena.ship.rank;
+    if (element.arena.ship.rank) {
+      res['Average Fleet Arena Rank'] += element.arena.ship.rank;
+      fleetCount++;
+    }
+
 
     for (const t of Object.keys(element.roster)) {
       const toon = element.roster[t];
@@ -157,10 +162,10 @@ async function getGuildStats(client, roster) {
             res['Number of zBastilla']++;
           }
           break;
-          case 'ENFYSNEST':
-            if (isG11 || isG12) {
-              res['Number of G11+ Enfys Nest']++;
-            }
+        case 'ENFYSNEST':
+          if (isG11 || isG12) {
+            res['Number of G11+ Enfys Nest']++;
+          }
           break;
       }
     }
@@ -168,8 +173,12 @@ async function getGuildStats(client, roster) {
   res['Total GP'] = client.numberWithCommas(res['Total GP']);
   res['Average Arena Rank'] /= roster.length;
   res['Average Arena Rank'] = res['Average Arena Rank'].toFixed(2);
-  res['Average Fleet Arena Rank'] /= roster.length;
-  res['Average Fleet Arena Rank'] = res['Average Fleet Arena Rank'].toFixed(2);
+  if (fleetCount) {
+    res['Average Fleet Arena Rank'] /= fleetCount;
+    res['Average Fleet Arena Rank'] = res['Average Fleet Arena Rank'].toFixed(2);
+  } else {
+    res['Average Fleet Arena Rank'] = 'N/A';
+  }
   return res;
 }
 
