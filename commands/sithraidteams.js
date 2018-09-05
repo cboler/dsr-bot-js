@@ -1,6 +1,6 @@
 // Returns the list of HSTR teams
 const hstrTeams = require("../data/hstrTeams.json");
-const MAX_HSTR_TEAMS_PER_EMBED = 28;
+const MAX_HSTR_TEAMS_PER_EMBED = 20;
 const ALL_PHASES = ['PHASE1', 'PHASE2', 'PHASE3', 'PHASE4_WITH_DN'];
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
@@ -36,7 +36,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 
   const msg = getHstrTeams(client.nameDict, phases);
-  Object.keys(msg).sort().forEach(function (phase, i) {
+  sortedPhases = Object.keys(msg).sort();
+  for(const phase of sortedPhases) {
     const teams = Object.keys(msg[phase]).sort();
     if (teams.length < MAX_HSTR_TEAMS_PER_EMBED) {
       const fields = [];
@@ -52,16 +53,15 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       const nb = Math.ceil(teams.length / MAX_HSTR_TEAMS_PER_EMBED);
       for (let i = 1; i < nb + 1; i++) {
         const fields = [];
-        for (const teamidx in teams.slice((i - 1) * MAX_HSTR_TEAMS_PER_EMBED, i * i * MAX_HSTR_TEAMS_PER_EMBED < teams.length ? MAX_HSTR_TEAMS_PER_EMBED : teams.length)) {
-          if (!teams.hasOwnProperty(teamidx)) {
-            continue;
-          }
-          fields.push({ name: teams[teamidx], value: msg[phase][teams[teamidx]] });
+        let start = (i - 1) * MAX_HSTR_TEAMS_PER_EMBED;
+        let end = i * MAX_HSTR_TEAMS_PER_EMBED < teams.length ? MAX_HSTR_TEAMS_PER_EMBED : teams.length;
+        for (const teamidx of teams.slice(start, end)) {
+          fields.push({ name: teamidx, value: msg[phase][teamidx] });
         }
-        dm.send(client.createEmbed(`HSTR Teams for ${phase} (${i}/${nb})`, fields));
+        await dm.send(client.createEmbed(`HSTR Teams for ${phase} (${i}/${nb})`, fields));
       }
     }
-  });
+  }
   await message.react("👍");
 };
 

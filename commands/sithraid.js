@@ -94,7 +94,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
           const nb = Math.ceil(teams.length / MAX_HSTR_TEAMS_PER_EMBED);
           for (let i = 0; i < nb + 1; i++) {
             const fieldsBD = [];
-            for (const teamName in teams.slice((i - 1) * MAX_HSTR_TEAMS_PER_EMBED, i * i * MAX_HSTR_TEAMS_PER_EMBED < teams.length ? MAX_HSTR_TEAMS_PER_EMBED : teams.length)) {
+            for (const teamName in teams.slice((i - 1) * MAX_HSTR_TEAMS_PER_EMBED, i * MAX_HSTR_TEAMS_PER_EMBED < teams.length ? MAX_HSTR_TEAMS_PER_EMBED : teams.length)) {
               fieldsBD.push({ name: `${teamName} - ${breakdown[v][teamName]['comp']} (Goal: ${breakdown[v][teamName]['goal']}%) - eligibility: ${breakdown[v][teamName]['eligibility']}`, value: breakdown[v][teamName]['players'].join(", ") });
             }
             dm.send(client.createEmbed(`${title}'s HSTR ${v} Assignments (${i}/${nb})`, fieldsBD));
