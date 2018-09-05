@@ -84,12 +84,12 @@ const init = async () => {
 
   client.nameDict = {};
   for (const u of unitsList) {
-    client.nameDict[u.baseId] = u.name;
+    client.nameDict[u.baseId] = u.nameKey;
   }
 
   client.skillsDict = {};
   for(const a of skills) {
-    client.skillsDict[a.id] = {name: abilities.filter(y => y.id === skills.filter(x => x.id === a.id)[0].abilityReference)[0].name, type:a.id.split('skill_')[0]};
+    client.skillsDict[a.id] = {name: abilities.filter(y => y.id === skills.filter(x => x.id === a.id)[0].abilityReference)[0].nameKey, type:a.id.split('skill_')[0]};
   }
 
   // Here we load **commands** into memory, as a collection, so they're accessible

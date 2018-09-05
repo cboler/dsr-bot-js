@@ -6,35 +6,39 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     await message.react("☠");
     return;
   }
-  const allycode1 = args[0].replace(/-/g, '');
-  if (!client.isAllyCode(allycode1)) {
+  let allyCode = args[0].replace(/-/g, '');
+  if (!client.isAllyCode(allyCode)) {
     await message.channel.send(`\`\`\`js\nError: ${args[0]} is not an ally code.\n\`\`\``);
     await message.react("☠");
     return;
   }
+  allyCode = Number(allyCode);
 
-  const playerData = await client.swapi.fetchPlayer({ allycode: allycode1 });
+  const data = await client.swapi.fetchPlayer({ 
+    allycode: allyCode,
+    enums: true
+  });
 
-  if (playerData.hasOwnProperty('error')) {
-    await message.channel.send(`\`\`\`js\nError: ${playerData.error}.\n\`\`\``);
+  if (data.hasOwnProperty('error')) {
+    await message.channel.send(`\`\`\`js\nError: ${data.error}.\n\`\`\``);
     await message.react("☠");
     return;
   }
 
-  if (playerData.hasOwnProperty('response')) {
-    await message.channel.send(`\`\`\`js\nError: Request time out requesting roster for ${allycode1}\n\`\`\``);
+  if (data.hasOwnProperty('response')) {
+    await message.channel.send(`\`\`\`js\nError: Request time out requesting roster for ${allyCode}\n\`\`\``);
     await message.react("☠");
     return;
   }
 
-  const stats = getPlayerStats(client, playerData);
+  const stats = getPlayerStats(client, data[0]);
   // message.channel.send(`\`\`\`js\n${guild1.name}: ${JSON.stringify(stats1)}\n\`\`\``);
   const fields = [];
   Object.keys(stats).forEach(function (key) {
     let val = `${stats[key]}`;
     fields.push({ name: key, value: val });
   });
-  await message.channel.send(client.createEmbedInDescription(playerData.name, fields));
+  await message.channel.send(client.createEmbedInDescription(data[0].name, fields));
 
   let options = [];
   if (args.length > 1) {
@@ -49,26 +53,22 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
   // [ a | t | l | d | s | o ]
   if (options.indexOf('a') >= 0 || options.indexOf('s') >= 0 || options.indexOf('o') >= 0) {
-    const playerUnits = await client.swapi.fetchUnits({
-      allycode: [allycode1],
-      mods: true
-    });
-    const playerMods = client.getModsFromPlayer(playerUnits);
-    
+    const playerMods = client.getModsFromPlayer(data[0].roster);
+
     if (options.indexOf('a') >= 0 || options.indexOf('s') >= 0) {
       const speedMods = getPlayerMods(client, playerMods, 'Speed', 15);
       if (speedMods.length) {
-        await message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Speed Mods`, speedMods));
+        await message.channel.send(client.createEmbed(`${data[0].name}'s Top 6 Speed Mods`, speedMods));
       } else {
-        await message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Speed Mods`, { name: '😦', value: 'No mods with speed secondary above 15.', inline: true }));
+        await message.channel.send(client.createEmbed(`${data[0].name}'s Top 6 Speed Mods`, { name: '😦', value: 'No mods with speed secondary above 15.', inline: true }));
       }
     }
     if (options.indexOf('a') >= 0 || options.indexOf('o') >= 0) {
       const offMods = getPlayerMods(client, playerMods, 'Offense', 100);
       if (offMods.length) {
-        await message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Offense Mods`, offMods));
+        await message.channel.send(client.createEmbed(`${data[0].name}'s Top 6 Offense Mods`, offMods));
       } else {
-        await message.channel.send(client.createEmbed(`${playerData.name}'s Top 6 Ofense Mods`, { name: '😦', value: 'No mods with offense secondary above 100.', inline: true }));
+        await message.channel.send(client.createEmbed(`${data[0].name}'s Top 6 Ofense Mods`, { name: '😦', value: 'No mods with offense secondary above 100.', inline: true }));
       }
     }
   }
@@ -94,9 +94,9 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 function getPlayerStats(client, data) {
   const res = {};
   res['Level'] = data.level;
-  res['GP'] = client.numberWithCommas(data.gpFull);
-  res['Character GP'] = client.numberWithCommas(data.gpChar);
-  res['Ship GP'] = client.numberWithCommas(data.gpShip);
+  res['GP'] = client.numberWithCommas(data.stats.filter(o => o.nameKey === 'STAT_GALACTIC_POWER_ACQUIRED_NAME')[0].value);
+  res['Character GP'] = client.numberWithCommas(data.stats.filter(o => o.nameKey === 'STAT_CHARACTER_GALACTIC_POWER_ACQUIRED_NAME')[0].value);
+  res['Ship GP'] = client.numberWithCommas(data.stats.filter(o => o.nameKey === 'STAT_SHIP_GALACTIC_POWER_ACQUIRED_NAME')[0].value);
   res['Arena ranks (squad/fleet)'] = `Rank ${data.arena.char.rank} / Rank ${data.arena.ship.rank}`;
   res['Arena team'] = '\n';
   for (const toon in data.arena.char.squad) {
@@ -191,7 +191,7 @@ function getPlayerStats(client, data) {
 
 function getPlayerMods(client, data, type, minVal) {
   let mods = [];
-  for (d in data) {
+  for (const d in data) {
     if (!data.hasOwnProperty(d)) {
       continue;
     }
@@ -261,7 +261,7 @@ function modToField(client, mod, type) {
       slot = '▲';
       break;
   }
-  
+
   let value = `\`\`\`asciidoc\n= ${client.nameDict[mod.unit]} =\n`;
   if (mod.secondary_1[0] === type) {
     value += `[${mod.secondary_1[0]} ${mod.secondary_1[1]}]\n`;

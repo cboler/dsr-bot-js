@@ -21,15 +21,14 @@ module.exports = (client) => {
   };
 
   client.getModsFromPlayer = (x) => {
-    console.log(x);
     const mods = [];
     for (const unit of Object.keys(x)) {
       if (!x.hasOwnProperty(unit)) {
         continue;
       }
 
-      for (var i = 0; i < x[unit][0].mods.length; i++) {
-        const formattedMod = client.formatMod(x[unit][0].mods[i], unit, i);
+      for (var i = 0; i < x[unit].mods.length; i++) {
+        const formattedMod = client.formatMod(x[unit].mods[i], x[unit].defId, i);
         if (Object.keys(formattedMod).length !== 0) {
           mods.push(formattedMod);
         }
@@ -51,25 +50,19 @@ module.exports = (client) => {
       pips: mod.pips
     };
 
-    if (mod.stat) {
-      formattedMod['primary'] = client.formatModStat(mod.stat[0]);
-      formattedMod['secondary_1'] = client.formatModStat(mod.stat[1]);
-      formattedMod['secondary_2'] = client.formatModStat(mod.stat[2]);
-      formattedMod['secondary_3'] = client.formatModStat(mod.stat[3]);
-      formattedMod['secondary_4'] = client.formatModStat(mod.stat[4]);
-    }
+    formattedMod['primary'] = client.formatModStat(mod.primaryBonusType, mod.primaryBonusValue);
+    formattedMod['secondary_1'] = client.formatModStat(mod.secondaryType_1, mod.secondaryValue_1);
+    formattedMod['secondary_2'] = client.formatModStat(mod.secondaryType_2, mod.secondaryValue_2);
+    formattedMod['secondary_3'] = client.formatModStat(mod.secondaryType_3, mod.secondaryValue_3);
+    formattedMod['secondary_4'] = client.formatModStat(mod.secondaryType_4, mod.secondaryValue_4);
     return formattedMod;
   }
 
-  client.formatModStat = (stat) => {
-    if (stat[0] === 0) {
+  client.formatModStat = (type, value) => {
+    if(!type) {
       return [];
     }
-    const name = STATS_ENUM[stat[0]];
-    var value = stat[1];
-    // if (name.includes('PERCENTADDITIVE')) {
-    //   value /= 1000000;
-    // } else {
+    const name = STATS_ENUM[type];
     value /= 100000000;
     if (name.includes('PERCENTADDITIVE')) {
       value = value.toFixed(2);
