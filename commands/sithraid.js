@@ -54,7 +54,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     let guildAllyCodes = guild.roster.map(r => r.allyCode);
     roster = await client.swapi.fetchPlayer({ allycode: guildAllyCodes });
   } else {
-    roster = await client.swapi.fetchPlayer({ allycode: Number(allycodes) });
+    roster = await client.swapi.fetchPlayer({ allycode: allycodes });
     if (!Array.isArray(roster)) {
       title = roster.name;
       roster = [roster];

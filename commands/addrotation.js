@@ -12,7 +12,13 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 
   // Connect to the db
-  MongoClient.connect(client.config.mongoUrl, { useNewUrlParser: true }, function(err, client) {
+  MongoClient.connect(client.config.mongodbConfig.url, 
+  { 
+    useNewUrlParser: true,
+    user: client.config.mongodbConfig.user,
+    pwd: client.config.mongodbConfig.pwd
+  }, 
+  function(err, client) {
     assert.equal(null, err);
     console.log("Connected successfully to server");
    

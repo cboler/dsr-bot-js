@@ -8,13 +8,14 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     await message.react("☠");
     return;
   }
-  const allycode = args[0].replace(/-/g, '');
+  let allycode = args[0].replace(/-/g, '');
   if (!client.isAllyCode(allycode)) {
     await message.channel.send(`\`\`\`js\nError: ${args[0]} is not an ally code.\n\`\`\``);
     await message.react("☠");
     return;
   }
-
+  allycode = Number(allycode);
+  
   const guild = await client.swapi.fetchGuild({
     allycode: allycode
   });
@@ -32,16 +33,13 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 
   let allyCodes = guild.roster.map(r => r.allyCode);
+  console.log(allyCodes);
   const roster = await client.swapi.fetchPlayer({ 
     allycodes: allyCodes,
-    enums: true,
-    project: {
-      name: 1,
-      stats: 1,
-      roster: 1,
-      arena: 1
-    }
+    enums: true
   });
+  
+  console.log(roster);
   
   if(roster.hasOwnProperty('response')) {
     await message.channel.send(`\`\`\`js\nError: Request time out\n\`\`\``);
