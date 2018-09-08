@@ -15,7 +15,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     return;
   }
   allycode = Number(allycode);
-  
+
   const guild = await client.swapi.fetchGuild({
     allycode: allycode
   });
@@ -33,15 +33,12 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 
   let allyCodes = guild.roster.map(r => r.allyCode);
-  console.log(allyCodes);
-  const roster = await client.swapi.fetchPlayer({ 
+  const roster = await client.swapi.fetchPlayer({
     allycodes: allyCodes,
     enums: true
   });
-  
-  console.log(roster);
-  
-  if(roster.hasOwnProperty('response')) {
+
+  if (roster.hasOwnProperty('response')) {
     await message.channel.send(`\`\`\`js\nError: Request time out\n\`\`\``);
     await message.react("☠");
     return;
@@ -61,6 +58,18 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         ws.cell(i + 1, j + 1).string(stats[i][j]);
       } else {
         ws.cell(i + 1, j + 1).number(stats[i][j]);
+      }
+    }
+  }
+  
+  var ws2 = wb.addWorksheet('TW farm');
+  const twFarm = await getTWFarm(client, roster);
+  for (var i = 0; i < twFarm.length; i++) {
+    for (var j = 0; j < twFarm[i].length; j++) {
+      if (j === 0 || i === 0) {
+        ws2.cell(i + 1, j + 1).string(twFarm[i][j]);
+      } else {
+        ws2.cell(i + 1, j + 1).number(twFarm[i][j]);
       }
     }
   }
@@ -102,7 +111,7 @@ async function getStats(client, roster) {
     let bh = Array(6).fill(0);
     let fo = Array(6).fill(0);
     let sith = Array(6).fill(0);
-    
+
     for (const t of Object.keys(element.roster)) {
       const toon = element.roster[t];
       let tempZetas = 0;
@@ -160,9 +169,9 @@ async function getStats(client, roster) {
         }
       }
 
-      if(toon.defId === 'QIRA') {
+      if (toon.defId === 'QIRA') {
         scoundrels[0] = toon.gp;
-      } else if(toon.defId === 'L3_37') {
+      } else if (toon.defId === 'L3_37') {
         scoundrels[1] = toon.gp;
       } else if (toon.defId === 'YOUNGCHEWBACCA') {
         scoundrels[2] = toon.gp;
@@ -172,9 +181,9 @@ async function getStats(client, roster) {
         scoundrels[4] = toon.gp;
       }
 
-      if(toon.defId === 'BOSSK') {
+      if (toon.defId === 'BOSSK') {
         bh[0] = toon.gp;
-      } else if(toon.defId === 'DENGAR') {
+      } else if (toon.defId === 'DENGAR') {
         bh[1] = toon.gp;
       } else if (toon.defId === 'IG88') {
         bh[2] = toon.gp;
@@ -183,10 +192,10 @@ async function getStats(client, roster) {
       } else if (toon.defId === 'BOBAFETT') {
         bh[4] = toon.gp;
       }
-      
-      if(toon.defId === 'KYLORENUNMASKED') {
+
+      if (toon.defId === 'KYLORENUNMASKED') {
         fo[0] = toon.gp;
-      } else if(toon.defId === 'KYLOREN') {
+      } else if (toon.defId === 'KYLOREN') {
         fo[1] = toon.gp;
       } else if (toon.defId === 'FIRSTORDERTROOPER') {
         fo[2] = toon.gp;
@@ -195,10 +204,10 @@ async function getStats(client, roster) {
       } else if (toon.defId === 'FIRSTORDEROFFICERMALE') {
         fo[4] = toon.gp;
       }
-      
-      if(toon.defId === 'DARTHTRAYA') {
+
+      if (toon.defId === 'DARTHTRAYA') {
         sith[0] = toon.gp;
-      } else if(toon.defId === 'DARTHSION') {
+      } else if (toon.defId === 'DARTHSION') {
         sith[1] = toon.gp;
       } else if (toon.defId === 'DARTHNIHILUS') {
         sith[2] = toon.gp;
@@ -206,7 +215,7 @@ async function getStats(client, roster) {
         sith[3] = toon.gp;
       } else if (toon.defId === 'COUNTDOOKU') {
         sith[4] = toon.gp;
-      }      
+      }
     }
     d.push(g11);
     d.push(g12);
@@ -221,6 +230,217 @@ async function getStats(client, roster) {
     d.push(...bh);
     d.push(...fo);
     d.push(...sith);
+    data.push(d);
+  }
+  return data;
+}
+
+async function getTWFarm(client, roster) {
+  const data = [];
+  // 0
+  data.push(['Name']);
+  // 1-10
+  data[0].push(...['Traya', 'Traya zetas', 'Sion', 'Sion zetas', 'DN', 'DN zetas', 'Sith Trooper', 'Dooku', 'Dooku zetas', 'SASS']);
+  // 11-20
+  data[0].push(...['Qi\'ra', 'Qi\'ra zetas', 'Vandor Chewie', 'VC zetas', 'Big Z', 'Big Z zetas', 'Enfys Nest', 'Enfys zetas', 'L337', 'L337 zetas']);
+  // 21-36
+  data[0].push(...['Bossk', 'Bossk zetas', 'Boba Fett', 'Boba zetas', 'Greedo', 'Greedo zetas', 'Dengar', 'Dengar zetas', 'Embo', 'Embo zetas', 'IG88', 'IG88 zetas', 'Zam', 'Zam zetas', 'Aurra', 'Aurra zetas']);
+  // 37-52
+  data[0].push(...['KRU', 'KRU zetas', 'Kylo', 'Kylo zetas', 'foo', 'foo zetas', 'fost', 'fost zetas', 'fox', 'fox zetas', 'Barriss', 'Barriss zetas', 'FOSFTP', 'FOSFTP zetas', 'FOTP', 'FOTP zetas']);
+  const l = data[0].length;
+  for (const r of Object.keys(roster)) {
+    const element = roster[r];
+    let d = new Array(l).fill(0);
+    d[0] = element.name;
+
+    for (const t of Object.keys(element.roster)) {
+      const toon = element.roster[t];
+
+      if (toon.defId === 'DARTHTRAYA') {
+        d[1] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[2]++;
+          }
+        }
+      } else if (toon.defId === 'DARTHSION') {
+        d[3] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[4]++;
+          }
+        }
+      } else if (toon.defId === 'DARTHNIHILUS') {
+        d[5] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[6]++;
+          }
+        }
+      } else if (toon.defId === 'SITHTROOPER') {
+        d[7] = toon.gear;
+      } else if (toon.defId === 'COUNTDOOKU') {
+        d[8] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[9]++;
+          }
+        }
+      }
+
+      if (toon.defId === 'QIRA') {
+        d[11] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[12]++;
+          }
+        }
+      } else if (toon.defId === 'YOUNGCHEWBACCA') {
+        d[13] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[14]++;
+          }
+        }
+      } else if (toon.defId === 'ZAALBAR') {
+        d[15] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[16]++;
+          }
+        }
+      } else if (toon.defId === 'ENFYSNEST') {
+        d[17] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[18]++;
+          }
+        }
+      } else if (toon.defId === 'L3_37') {
+        d[19] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[20]++;
+          }
+        }
+      }
+
+      if (toon.defId === 'BOSSK') {
+        d[21] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[22]++;
+          }
+        }
+      } else if (toon.defId === 'BOBAFETT') {
+        d[23] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[24]++;
+          }
+        }
+      } else if (toon.defId === 'GREEDO') {
+        d[25] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[26]++;
+          }
+        }
+      } else if (toon.defId === 'DENGAR') {
+        d[27] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[28]++;
+          }
+        }
+      } else if (toon.defId === 'EMBO') {
+        d[29] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[30]++;
+          }
+        }
+      } else if (toon.defId === 'IG88') {
+        d[31] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[32]++;
+          }
+        }
+      } else if (toon.defId === 'ZAMWESELL') {
+        d[33] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[34]++;
+          }
+        }
+      } else if (toon.defId === 'AURRA_SING') {
+        d[35] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[36]++;
+          }
+        }
+      }
+
+      if (toon.defId === 'KYLORENUNMASKED') {
+        d[37] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[38]++;
+          }
+        }
+      } else if (toon.defId === 'KYLOREN') {
+        d[39] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[40]++;
+          }
+        }
+      } else if (toon.defId === 'FIRSTORDEROFFICERMALE') {
+        d[41] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[42]++;
+          }
+        }
+      } else if (toon.defId === 'FIRSTORDERTROOPER') {
+        d[43] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[44]++;
+          }
+        }
+      } else if (toon.defId === 'FIRSTORDEREXECUTIONER') {
+        d[45] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[46]++;
+          }
+        }
+      } else if (toon.defId === 'BARRISSOFFEE') {
+        d[47] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[48]++;
+          }
+        }
+      } else if (toon.defId === 'FIRSTORDERSPECIALFORCESPILOT') {
+        d[49] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[50]++;
+          }
+        }
+      } else if (toon.defId === 'FIRSTORDERTIEPILOT') {
+        d[51] = toon.gear;
+        for (const s of toon.skills) {
+          if (s.isZeta && s.tier >= 8) {
+            d[52]++;
+          }
+        }
+      }
+    }
     data.push(d);
   }
   return data;

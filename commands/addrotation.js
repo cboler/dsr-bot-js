@@ -12,32 +12,27 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 
   // Connect to the db
-  MongoClient.connect(client.config.mongodbConfig.url, 
-  { 
-    useNewUrlParser: true,
-    user: client.config.mongodbConfig.user,
-    pwd: client.config.mongodbConfig.pwd
-  }, 
-  function(err, client) {
-    assert.equal(null, err);
-    console.log("Connected successfully to server");
-   
-    const db = client.db('swgoh');
-    
-    const row = {
-      channelId: message.channel.id,
-      rotation: args,
-      active: true,
-      direction: 'left'
-    };
-    
-    const collection = db.collection('rotations');
-    collection.insertOne(row, function(err, result) {
-      assert.equal(err, null);
+  MongoClient.connect(client.config.mongodbConfig.url,
+    function (err, client) {
+      assert.equal(null, err);
+      console.log("Connected successfully to server");
+
+      const db = client.db('swgoh');
+
+      const row = {
+        channelId: message.channel.id,
+        rotation: args,
+        active: true,
+        direction: 'left'
+      };
+
+      const collection = db.collection('rotations');
+      collection.insertOne(row, function (err, result) {
+        assert.equal(err, null);
+      });
+
+      client.close();
     });
-    
-    client.close();
-  });
 
   await message.channel.send(JSON.stringify(args));
 
