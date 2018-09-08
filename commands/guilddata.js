@@ -240,13 +240,13 @@ async function getTWFarm(client, roster) {
   // 0
   data.push(['Name']);
   // 1-10
-  data[0].push(...['Traya', 'Traya zetas', 'Sion', 'Sion zetas', 'DN', 'DN zetas', 'Sith Trooper', 'Dooku', 'Dooku zetas', 'SASS']);
+  data[0].push(...['Darth Traya', 'Darth Traya zetas', 'Darth Sion', 'Darth Sion zetas', 'Darth Nihilus', 'Darth Nihilus zetas', 'Sith Trooper', 'Count Dooku', 'Count Dooku zetas', 'Sith Assassin']);
   // 11-20
-  data[0].push(...['Qi\'ra', 'Qi\'ra zetas', 'Vandor Chewie', 'VC zetas', 'Big Z', 'Big Z zetas', 'Enfys Nest', 'Enfys zetas', 'L337', 'L337 zetas']);
+  data[0].push(...['Qi\'ra', 'Qi\'ra zetas', 'Vandor Chewbacca', 'Vandor Chewbacca zetas', 'Zaalbar', 'Zaalbar zetas', 'Enfys Nest', 'Enfys Nest zetas', 'L3-37', 'L3-37 zetas']);
   // 21-36
-  data[0].push(...['Bossk', 'Bossk zetas', 'Boba Fett', 'Boba zetas', 'Greedo', 'Greedo zetas', 'Dengar', 'Dengar zetas', 'Embo', 'Embo zetas', 'IG88', 'IG88 zetas', 'Zam', 'Zam zetas', 'Aurra', 'Aurra zetas']);
+  data[0].push(...['Bossk', 'Bossk zetas', 'Boba Fett', 'Boba zetas', 'Greedo', 'Greedo zetas', 'Dengar', 'Dengar zetas', 'Embo', 'Embo zetas', 'IG-88', 'IG-88 zetas', 'Zam Wesell', 'Zam Wesell zetas', 'Aurra Sing', 'Aurra Sing zetas']);
   // 37-52
-  data[0].push(...['KRU', 'KRU zetas', 'Kylo', 'Kylo zetas', 'foo', 'foo zetas', 'fost', 'fost zetas', 'fox', 'fox zetas', 'Barriss', 'Barriss zetas', 'FOSFTP', 'FOSFTP zetas', 'FOTP', 'FOTP zetas']);
+  data[0].push(...['Kylo Ren (Unmasked)', 'Kylo Ren (Unmasked) zetas', 'Kylo Ren', 'Kylo Ren zetas', 'First Order Officer', 'First Order Officer zetas', 'First Order Stormtrooper', 'First Order Stormtrooper zetas', 'First Order Executioner', 'First Order Executioner zetas', 'Barriss Offee', 'Barriss Offee zetas', 'First Order SF TIE Pilot', 'First Order SF TIE Pilot zetas', 'First Order TIE Pilot', 'First Order TIE Pilot zetas']);
   const l = data[0].length;
   for (const r of Object.keys(roster)) {
     const element = roster[r];
