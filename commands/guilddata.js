@@ -286,6 +286,8 @@ async function getTWFarm(client, roster) {
             d[9]++;
           }
         }
+      } else if (toon.defId === 'SITHASSASSIN') {
+        d[10] = toon.gear;
       }
 
       if (toon.defId === 'QIRA') {
