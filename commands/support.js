@@ -1,7 +1,6 @@
 
 exports.run = async (client, message, args, level) => {
-  await message.channel.send(`Come join ${message.client.user} Support Server!\n 
-  https://discord.gg/YCurwRp \n`);
+  await message.channel.send(`Come join ${message.client.user} Support Server!\n https://discord.gg/YCurwRp \n`);
 };
 
 exports.conf = {
