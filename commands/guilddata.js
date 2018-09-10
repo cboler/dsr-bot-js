@@ -61,17 +61,22 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       }
     }
   }
-  
+
   var ws2 = wb.addWorksheet('TW farm');
   const twFarm = await getTWFarm(client, roster);
-  for (var i = 0; i < twFarm.length; i++) {
-    for (var j = 0; j < twFarm[i].length; j++) {
-      if (j === 0 || i === 0) {
-        ws2.cell(i + 1, j + 1).string(twFarm[i][j]);
+  var i = 1;
+  for (const [key, value] of Object.entries(twFarm)) {
+    var j = 1;
+    ws2.cell(j, i).string(key);
+    for (const val of value) {
+      j++;
+      if (i === 1) {
+        ws2.cell(j, i).string(val);
       } else {
-        ws2.cell(i + 1, j + 1).number(twFarm[i][j]);
+        ws2.cell(j, i).number(val);
       }
     }
+    i++;
   }
 
   var buffer = await wb.writeToBuffer();
@@ -236,214 +241,34 @@ async function getStats(client, roster) {
 }
 
 async function getTWFarm(client, roster) {
-  const data = [];
-  // 0
-  data.push(['Name']);
-  // 1-10
-  data[0].push(...['Darth Traya', 'Darth Traya zetas', 'Darth Sion', 'Darth Sion zetas', 'Darth Nihilus', 'Darth Nihilus zetas', 'Sith Trooper', 'Count Dooku', 'Count Dooku zetas', 'Sith Assassin']);
-  // 11-20
-  data[0].push(...['Qi\'ra', 'Qi\'ra zetas', 'Vandor Chewbacca', 'Vandor Chewbacca zetas', 'Zaalbar', 'Zaalbar zetas', 'Enfys Nest', 'Enfys Nest zetas', 'L3-37', 'L3-37 zetas']);
-  // 21-36
-  data[0].push(...['Bossk', 'Bossk zetas', 'Boba Fett', 'Boba zetas', 'Greedo', 'Greedo zetas', 'Dengar', 'Dengar zetas', 'Embo', 'Embo zetas', 'IG-88', 'IG-88 zetas', 'Zam Wesell', 'Zam Wesell zetas', 'Aurra Sing', 'Aurra Sing zetas']);
-  // 37-52
-  data[0].push(...['Kylo Ren (Unmasked)', 'Kylo Ren (Unmasked) zetas', 'Kylo Ren', 'Kylo Ren zetas', 'First Order Officer', 'First Order Officer zetas', 'First Order Stormtrooper', 'First Order Stormtrooper zetas', 'First Order Executioner', 'First Order Executioner zetas', 'Barriss Offee', 'Barriss Offee zetas', 'First Order SF TIE Pilot', 'First Order SF TIE Pilot zetas', 'First Order TIE Pilot', 'First Order TIE Pilot zetas']);
-  const l = data[0].length;
-  for (const r of Object.keys(roster)) {
-    const element = roster[r];
-    let d = new Array(l).fill(0);
-    d[0] = element.name;
+  const temp = { Name: [] };
+  for (const player of roster) {
+    temp.Name.push(player.name);
 
-    for (const t of Object.keys(element.roster)) {
-      const toon = element.roster[t];
-
-      if (toon.defId === 'DARTHTRAYA') {
-        d[1] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[2]++;
-          }
-        }
-      } else if (toon.defId === 'DARTHSION') {
-        d[3] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[4]++;
-          }
-        }
-      } else if (toon.defId === 'DARTHNIHILUS') {
-        d[5] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[6]++;
-          }
-        }
-      } else if (toon.defId === 'SITHTROOPER') {
-        d[7] = toon.gear;
-      } else if (toon.defId === 'COUNTDOOKU') {
-        d[8] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[9]++;
-          }
-        }
-      } else if (toon.defId === 'SITHASSASSIN') {
-        d[10] = toon.gear;
+    for (const toon of player.roster) {
+      if (!(toon.defId in temp)) {
+        temp[toon.defId] = [];
+        temp[`${toon.defId} zetas`] = [];
       }
-
-      if (toon.defId === 'QIRA') {
-        d[11] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[12]++;
-          }
-        }
-      } else if (toon.defId === 'YOUNGCHEWBACCA') {
-        d[13] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[14]++;
-          }
-        }
-      } else if (toon.defId === 'ZAALBAR') {
-        d[15] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[16]++;
-          }
-        }
-      } else if (toon.defId === 'ENFYSNEST') {
-        d[17] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[18]++;
-          }
-        }
-      } else if (toon.defId === 'L3_37') {
-        d[19] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[20]++;
-          }
+      temp[toon.defId].push(toon.gear);
+      let nbZetas = 0;
+      for (const skill of toon.skills) {
+        if (skill.isZeta && skill.tier >= 8) {
+          nbZetas++;
         }
       }
-
-      if (toon.defId === 'BOSSK') {
-        d[21] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[22]++;
-          }
-        }
-      } else if (toon.defId === 'BOBAFETT') {
-        d[23] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[24]++;
-          }
-        }
-      } else if (toon.defId === 'GREEDO') {
-        d[25] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[26]++;
-          }
-        }
-      } else if (toon.defId === 'DENGAR') {
-        d[27] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[28]++;
-          }
-        }
-      } else if (toon.defId === 'EMBO') {
-        d[29] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[30]++;
-          }
-        }
-      } else if (toon.defId === 'IG88') {
-        d[31] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[32]++;
-          }
-        }
-      } else if (toon.defId === 'ZAMWESELL') {
-        d[33] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[34]++;
-          }
-        }
-      } else if (toon.defId === 'AURRA_SING') {
-        d[35] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[36]++;
-          }
-        }
-      }
-
-      if (toon.defId === 'KYLORENUNMASKED') {
-        d[37] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[38]++;
-          }
-        }
-      } else if (toon.defId === 'KYLOREN') {
-        d[39] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[40]++;
-          }
-        }
-      } else if (toon.defId === 'FIRSTORDEROFFICERMALE') {
-        d[41] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[42]++;
-          }
-        }
-      } else if (toon.defId === 'FIRSTORDERTROOPER') {
-        d[43] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[44]++;
-          }
-        }
-      } else if (toon.defId === 'FIRSTORDEREXECUTIONER') {
-        d[45] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[46]++;
-          }
-        }
-      } else if (toon.defId === 'BARRISSOFFEE') {
-        d[47] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[48]++;
-          }
-        }
-      } else if (toon.defId === 'FIRSTORDERSPECIALFORCESPILOT') {
-        d[49] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[50]++;
-          }
-        }
-      } else if (toon.defId === 'FIRSTORDERTIEPILOT') {
-        d[51] = toon.gear;
-        for (const s of toon.skills) {
-          if (s.isZeta && s.tier >= 8) {
-            d[52]++;
-          }
-        }
-      }
+      temp[`${toon.defId} zetas`].push(nbZetas);
     }
-    data.push(d);
+  }
+  const data = {};
+  for (const k of Object.keys(temp)) {
+    if (k === 'Name') {
+      data.Name = temp[k];
+    } else if (k.includes(' zetas')) {
+      data[`${client.nameDict[k.split(' ')[0]]} zetas`] = temp[k];
+    } else {
+      data[client.nameDict[k]] = temp[k];
+    }
   }
   return data;
 }
