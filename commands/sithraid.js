@@ -12,10 +12,22 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
   const allycodes = [];
   let a = 0;
-  while (args[a] && client.isAllyCode(args[a].replace(/-/g, ''))) {
-    allycodes.push(args[a].replace(/-/g, ''));
+  let errors = 'Warning: error with those allycodes: ';
+  let notRegistered = '';
+  while (args[a]) {
+    let allycode = args[a].replace(/-/g, '');
+    allycode = await client.checkOrGetAllyCode(allycode, message.author.id);
+    if(allycode) {
+      allycodes.push(allycode);
+    } else if(args[a] === 'me') {
+      notRegistered = `You are not registered (use "register <yourallycode>" to use "me")`;
+    } else {
+      errors += allycode;
+    }
     a++;
   }
+  errors = errors.slice(0, -1);
+  errors =+ `\n${notRegistered}`;
 
   if (!allycodes.length) {
     await message.channel.send(`\`\`\`js\nError: sithraid needs an ally code.\n\`\`\``);
@@ -23,6 +35,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     return;
   }
 
+  if(errors) {
+    await message.channel.send(errors);
+  }
+  
   let options = 'g';
   if (a < args.length) {
     options = args[a];

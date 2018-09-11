@@ -8,7 +8,9 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     await message.react("☠");
     return;
   }
-  const allycode1 = args[0].replace(/-/g, '');
+  let allycode1 = args[0].replace(/-/g, '');
+  allycode1 = await client.checkOrGetAllyCode(allycode1, message.author.id);
+
   if (!client.isAllyCode(allycode1)) {
     await message.channel.send(`\`\`\`js\nError: ${args[0]} is not an ally code.\n\`\`\``);
     await message.react("☠");
@@ -41,7 +43,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   let lfill = 0;
 
   if (args.length > 1) {
-    const allycode2 = args[1].replace(/-/g, '');
+    let allycode2 = args[1].replace(/-/g, '');
+    allycode2 = await client.checkOrGetAllyCode(allycode2, message.author.id);
     if (!client.isAllyCode(allycode2)) {
       await message.channel.send(`\`\`\`js\nError: ${args[1]} is not an ally code.\n\`\`\``);
       await message.react("☠");

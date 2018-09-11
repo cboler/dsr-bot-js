@@ -9,6 +9,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     return;
   }
   let allycode = args[0].replace(/-/g, '');
+  allycode = await client.checkOrGetAllyCode(allycode, message.author.id);
   if (!client.isAllyCode(allycode)) {
     await message.channel.send(`\`\`\`js\nError: ${args[0]} is not an ally code.\n\`\`\``);
     await message.react("☠");
