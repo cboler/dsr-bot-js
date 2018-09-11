@@ -54,17 +54,36 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   const noCap = options.indexOf('n') >= 0;
 
   let title = 'HSTR Readiness';
-  let msg = null;
-  let breakdown = null;
-  let roster = null;
+  let msg;
+  let breakdown;
+  let roster;
   if (options.indexOf('g') >= 0 && allycodes.length == 1) {
-    const guild = await client.swapi.fetchGuild({
-      allycode: allycodes
-    });
+    let guild;
+    try {
+      guild = await client.swapi.fetchGuild({
+        allycode: allycodes
+      });
+    } catch(error) {
+      await message.channel.send(`\`${error}\``);
+      await message.react("☠");
+      return;
+    }
     let guildAllyCodes = guild.roster.map(r => r.allyCode);
-    roster = await client.swapi.fetchPlayer({ allycode: guildAllyCodes });
+    try {
+      roster = await client.swapi.fetchPlayer({ allycode: guildAllyCodes });
+    } catch(error) {
+      await message.channel.send(`\`${error}\``);
+      await message.react("☠");
+      return;
+    }
   } else {
-    roster = await client.swapi.fetchPlayer({ allycode: allycodes });
+    try {
+      roster = await client.swapi.fetchPlayer({ allycode: allycodes });
+    } catch(error) {
+      await message.channel.send(`\`${error}\``);
+      await message.react("☠");
+      return;
+    }
     if (!Array.isArray(roster)) {
       title = roster.name;
       roster = [roster];
@@ -170,7 +189,7 @@ function analyzeGuildHstrReadiness(client, roster, noCap) {
           let power = 0;
           let IDS = [];
           let playerZetas = playerRoster['zetas'];
-          let teamZetas = null;
+          let teamZetas;
           if (team.hasOwnProperty('ZETAS')) {
             teamZetas = team.ZETAS;
           }
@@ -209,7 +228,7 @@ function analyzeGuildHstrReadiness(client, roster, noCap) {
 
         let max_gp = 0;
         let goal = 0;
-        let winner = null;
+        let winner;
         for (let team_id in temp) {
           const data = temp[team_id];
           if (data['goal'] > goal) {

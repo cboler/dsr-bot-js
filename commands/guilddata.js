@@ -17,10 +17,17 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
   allycode = Number(allycode);
 
-  const guild = await client.swapi.fetchGuild({
-    allycode: allycode
-  });
-
+  let guild;
+  try {
+    guild = await client.swapi.fetchGuild({
+      allycode: allycode
+    });
+  } catch(error) {
+    await message.channel.send(`\`${error}\``);
+    await message.react("☠");
+    return;
+  }
+  
   if (guild.hasOwnProperty('error')) {
     await message.channel.send(`\`\`\`js\nError: ${guild.error}.\n\`\`\``);
     await message.react("☠");
@@ -34,11 +41,18 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 
   let allyCodes = guild.roster.map(r => r.allyCode);
-  const roster = await client.swapi.fetchPlayer({
-    allycodes: allyCodes,
-    enums: true
-  });
-
+  let roster;
+  try {
+    roster = await client.swapi.fetchPlayer({
+      allycodes: allyCodes,
+      enums: true
+    });
+  } catch(error) {
+    await message.channel.send(`\`${error}\``);
+    await message.react("☠");
+    return;
+  }
+  
   if (roster.hasOwnProperty('response')) {
     await message.channel.send(`\`\`\`js\nError: Request time out\n\`\`\``);
     await message.react("☠");
@@ -100,7 +114,6 @@ async function getStats(client, roster) {
   data[0].push(...['Traya', 'Sion', 'DN', 'SithT', 'Dooku', 'Sith GP']);
   for (const r of Object.keys(roster)) {
     const element = roster[r];
-    const stats = await client.swapi.rosterStats(element.roster);
     let d = [];
     d.push(element.name);
     d.push(element.stats.filter(o => o.nameKey == 'STAT_GALACTIC_POWER_ACQUIRED_NAME')[0].value);

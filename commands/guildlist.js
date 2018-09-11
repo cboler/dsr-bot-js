@@ -14,10 +14,17 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
   allycode = Number(allycode);
   
-  const guild = await client.swapi.fetchGuild({
-    allycode: allycode
-  });
-
+  let guild;
+  try {
+    guild = await client.swapi.fetchGuild({
+      allycode: allycode
+    });
+  } catch(error) {
+    await message.channel.send(`\`${error}\``);
+    await message.react("☠");
+    return;
+  }
+  
   if (guild.hasOwnProperty('error')) {
     await message.channel.send(`\`\`\`js\nError: ${guild.error}.\n\`\`\``);
     await message.react("☠");

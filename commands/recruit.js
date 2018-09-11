@@ -15,11 +15,18 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
   allyCode = Number(allyCode);
 
-  const data = await client.swapi.fetchPlayer({ 
-    allycode: allyCode,
-    enums: true
-  });
-
+  let data;
+  try {
+    data = await client.swapi.fetchPlayer({ 
+      allycode: allyCode,
+      enums: true
+    });
+  } catch(error) {
+    await message.channel.send(`\`${error}\``);
+    await message.react("☠");
+    return;
+  }
+  
   if (data.hasOwnProperty('error')) {
     await message.channel.send(`\`\`\`js\nError: ${data.error}.\n\`\`\``);
     await message.react("☠");

@@ -17,9 +17,16 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     return;
   }
 
-  const guild1 = await client.swapi.fetchGuild({
-    allycode: allycode1
-  });
+  let guild1;
+  try {
+    guild1 = await client.swapi.fetchGuild({
+      allycode: allycode1
+    });
+  } catch(error) {
+    await message.channel.send(`\`${error}\``);
+    await message.react("☠");
+    return;
+  }
 
   if (guild1.hasOwnProperty('error')) {
     await message.channel.send(`\`\`\`js\nError: ${guild1.error}.\n\`\`\``);
@@ -34,7 +41,14 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 
   let allyCodes1 = guild1.roster.map(r => r.allyCode);
-  const roster1 = await client.swapi.fetchPlayer({ allycode: allyCodes1 });
+  let roster1;
+  try {
+    roster1 = await client.swapi.fetchPlayer({ allycode: allyCodes1 });
+  } catch(error) {
+    await message.channel.send(`\`${error}\``);
+    await message.react("☠");
+    return;    
+  }
 
   const stats1 = await getGuildStats(client, roster1);
 
@@ -50,10 +64,16 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
       await message.react("☠");
       return;
     }
-    const guild2 = await client.swapi.fetchGuild({
-      allycode: allycode2
-    });
-
+    let guild2;
+    try {
+      guild2 = await client.swapi.fetchGuild({
+        allycode: allycode2
+      });
+    } catch(error) {
+      await message.channel.send(`\`${error}\``);
+      await message.react("☠");
+      return;
+    }
     if (guild2.hasOwnProperty('error')) {
       await message.channel.send(`\`\`\`js\nError: ${guild2.error}\n\`\`\``);
       await message.react("☠");
@@ -68,7 +88,14 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
 
     let allyCodes2 = guild2.roster.map(r => r.allyCode);
-    const roster2 = await client.swapi.fetchPlayer({ allycode: allyCodes2 });
+    let roster2;
+    try {
+      roster2 = await client.swapi.fetchPlayer({ allycode: allyCodes2 });
+    } catch(error) {
+      await message.channel.send(`\`${error}\``);
+      await message.react("☠");
+      return;
+    }
 
     const stats2 = await getGuildStats(client, roster2);
 
